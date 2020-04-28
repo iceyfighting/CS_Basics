@@ -6,3 +6,5 @@
 ## [数据结构](https://github.com/iceyfighting/CS_Basics/tree/master/Basics/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84)
 
 - 链表
+
+## [c++基础](https://github.com/iceyfighting/CS_Basics/tree/master/c%2B%2B%E5%9F%BA%E7%A1%80)
