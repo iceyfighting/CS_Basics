@@ -1,0 +1,50 @@
+#include<iostream>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+using namespace std;
+
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+};
+int array_tree[] = {1,2,4,0,0,0,3,0,0};
+int index_1 = 0;
+TreeNode *create(TreeNode *tree)
+{
+    int ch = array_tree[index_1++];
+    if(ch == 0)
+    {
+        tree = NULL;
+    }
+    else
+    {
+        tree = new TreeNode;
+        //tree = (TreeNode *)calloc(1,sizeof(TreeNode));
+        tree->val = ch;
+        tree->left = create(tree->left);
+        tree->right= create(tree->right);
+    }
+    return tree;
+}
+
+void preOrder(TreeNode *tree)
+{
+    if(tree)
+    {
+        cout << tree->val <<" ";
+        preOrder(tree->left);
+        preOrder(tree->right);
+    }
+}
+
+int main()
+{
+    TreeNode *tree = NULL;
+    tree = create(tree);
+    cout << "先序遍历:" << endl;
+    preOrder(tree);
+    cout<<endl;
+}
