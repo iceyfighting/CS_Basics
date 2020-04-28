@@ -1,0 +1,144 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+struct TreeNode{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+};
+
+class Solution{
+  public:
+    TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin)
+    {
+        int flag = 0;
+        if(pre.size()>1)
+        {
+            TreeNode *p = new TreeNode;
+            p->val = pre[0];
+            for(int i = 0;i<vin.size();i++)
+            {
+                if(pre[0] == vin[i])
+                {
+                    flag = i;//找到根结点的位置
+                    break;
+                }
+            }
+
+            vector<int> a;
+            vector<int> b;//assign()操作左闭右开
+            //if(flag == 0)
+            //{
+            //    a.assign(pre.begin()+1,pre.begin()+flag+1+1);
+            //}
+            //else
+            //{
+            a.assign(pre.begin()+1,pre.begin()+flag+1);//把前序遍历的左子树放入vector A中
+            //}
+            //printVector(a) ;
+            b.assign(vin.begin(),vin.begin()+flag);//把中序遍历的左子树放入vector B中
+            p->left = reConstructBinaryTree(a,b);
+            cout << p->val << endl;
+            a.assign(pre.begin()+flag+1,pre.begin()+pre.size());
+            b.assign(vin.begin()+flag+1,vin.begin()+vin.size());
+            p->right = reConstructBinaryTree(a,b);
+
+            return p;
+        }
+        else if(pre.size()==1)
+        {
+            TreeNode *p = new TreeNode;
+            p->val = pre[0];
+            return p;
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+
+    void printBinaryTree(TreeNode *head)
+    {
+        if(head)
+        {
+            cout << head->val << " ";
+            printBinaryTree(head->left);
+            printBinaryTree(head->right);
+        }
+        //cout<<endl;
+    }
+
+    void printVector(vector<int> &a)
+    {
+        for(int i = 0;i<a.size();i++)
+        {
+            cout << a[i] << " ";
+        }
+        cout<<endl;
+    }
+    
+    //前序遍历
+    void print_Tree_preOrder(TreeNode *head)
+    {
+        if(head != NULL)
+        {
+            cout << head->val << " ";
+            print_Tree_preOrder(head->left);
+            print_Tree_preOrder(head->right);
+        }
+    }
+
+    //中序遍历
+    void print_Tree_InOrder(TreeNode *head)
+    {
+        if(head != NULL)
+        {
+            print_Tree_InOrder(head->left);
+            cout << head->val << " ";
+            print_Tree_InOrder(head->right);
+        }
+    }
+
+    //后序遍历
+    void print_Tree_PostOrder(TreeNode *head)
+    {
+        if(head != NULL)
+        {
+            print_Tree_PostOrder(head->left);
+            print_Tree_PostOrder(head->right);
+            cout << head->val << " ";
+        }
+    }
+};
+
+int main()
+{
+    int a[8] = {1,2,4,7,3,5,6,8};
+    int b[8] = {4,7,2,1,5,3,8,6};
+    vector<int> pre;
+    vector<int> vin;
+    TreeNode *head;
+    Solution ss;
+
+    for(int i = 0; i < 8; i++)
+    {
+        pre.push_back(a[i]);
+        vin.push_back(b[i]);
+    }
+
+    head = ss.reConstructBinaryTree(pre,vin);
+    ss.printBinaryTree(head);
+    cout<<endl;
+    cout<<"前序遍历:";
+    ss.print_Tree_preOrder(head);
+    cout<<endl;
+
+    cout<<"中序遍历:";
+    ss.print_Tree_InOrder(head);
+    cout<<endl;
+
+    cout<<"后序遍历:";
+    ss.print_Tree_PostOrder(head);
+    cout<<endl;
+}
