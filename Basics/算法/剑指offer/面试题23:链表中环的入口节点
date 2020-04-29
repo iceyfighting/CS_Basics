@@ -1,1 +1,114 @@
+/*
+确定一个链表中是否包含环
+得到环中节点的数目
+找到环的入口
+*/
 
+#include<iostream>
+using namespace std;
+
+ struct ListNode{
+       int val;
+        struct ListNode *next;
+        ListNode(int x):
+                val(x),next(NULL){
+                }
+  };
+
+class Solution
+{
+  public:
+    ListNode* create(){
+                       ListNode *p,*head,*tail;
+                      head = tail = NULL;
+                       for(int i =0;i<7;i++){
+                          p = new ListNode(i);
+                          if(!head){
+                              head = p;
+                          }
+                          else{
+                            tail->next = p;
+                          }
+                          tail = p;
+                       }
+                       return head;
+                  }
+    void print_Node(ListNode *head){
+                     while(head){
+                        cout<<head->val<<" ";
+                        head = head->next;
+                     }
+                     cout<<endl;
+                }
+      int find_loop_sum(ListNode* pHead){
+                    int n =0;
+                    ListNode *kuai = NULL;//定义快指针
+                    ListNode *man = NULL;//定义慢指针
+                    if(pHead->next){ //若头结点的下一个节点不为空
+                       man = pHead->next;//则慢节点就是头结点的下一个节点
+                    }
+                    else  //若头结点的下一个节点为空，则返回0
+                    {
+                       return 0;
+                    }
+  
+                    if(man->next){ // 若慢节点的下一个节点不为空
+                       kuai = man->next; //定义快结点为慢节点的下一个节点
+                    }
+                    else //若慢节点的下一个节点为空，则返回0
+                    {
+                       return 0;
+                    }
+  
+                    while(kuai !=man){ //while()循环 条件是若快结点不等于慢节点 说明该链表不存在环
+                          if(kuai->next && kuai->next->next){//若快节点的下一个节点和下下一个节点存在
+                             kuai = kuai->next->next; //快节点一次走两步
+                             man = man->next; //慢节点一次走一步
+                          }else{ //直到快节点追上慢节点，证明该链表存在环，循环结束
+                             return 0;
+                          }
+                    }
+  
+                    while(kuai->next !=man){ //计算环中有几个节点
+                          kuai = kuai->next;
+                          n++;
+                       }
+                    n++;
+                    cout<<"环中节点的个数"<<n<<endl;
+                    return n;
+                }
+ListNode* EntryNodeOfLoop(ListNode* pHead){
+                       if(!pHead){//若头结点为空
+                           return NULL;
+                       }
+  
+                       int n = find_loop_sum(pHead); //得到环中节点个数
+                       if(n == 0){
+                          return NULL;
+                       }
+  
+                       ListNode *p1 = pHead;
+                       ListNode *p2 = pHead;
+                       for(int i =0;i<n;i++){ //p1节点往前先走n步
+                           p1 = p1->next;
+                       }
+  
+                       while(p1 != p2){ //while()循环，只要p1节点不等于p2节点，就一直移动直到p1节点等于p2节点即入口节点
+                           p1 = p1->next; //p1从第n个节点往后移动
+                           p2 = p2->next; //p2从头结点开始往后移动
+                       }
+                       return p1;
+                }
+
+};
+
+int main(){
+     Solution ss;
+     ListNode *head,*loop;
+     head = loop =NULL;
+ 
+     head = ss.create();//创建链表
+     ss.print_Node(head);//输出链表
+     loop = ss.EntryNodeOfLoop(head);//进入函数
+     cout<<"环的入口结点的数据:"<<loop->val<<endl;//输出环的入口结点
+ }
