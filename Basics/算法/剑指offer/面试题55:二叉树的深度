@@ -1,0 +1,78 @@
+/*
+ *二叉树的深度用递归来做。
+ *一棵树只有一个节点时，深度为1
+ *若根节点只有左子树而没有右子树，深度为左子树深度加1
+ *若根节点只有右子树而没有左子树，深度为右子树深度加1
+ *既有左子树右有右子树，则深度为左、右子树深度较大值再加一
+ * */
+#include<iostream>
+#include<stdlib.h>
+#include<stack>
+    using namespace std;
+
+    struct BinaryTreeNode{
+    int             val;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+    };
+
+
+    int Array_BinaryTree[] = {1,2,4,0,0,5,7,0,0,0,3,0,6,0,0};
+    int index_1 = 0;
+    class Solution{
+    public:
+        BinaryTreeNode*  CreateBinaryTree(BinaryTreeNode *tree)
+        {
+            int num = Array_BinaryTree[index_1++];
+            //cout << index_1 <<endl;//无递归结束的标志
+            if(num == 0)
+            {
+                tree = NULL;
+            }
+            else
+            {
+                tree = new BinaryTreeNode;
+                //cout << "11111"<<endl;
+                tree->val = num;
+                tree->left = CreateBinaryTree(tree->left);
+                tree->right= CreateBinaryTree(tree->right);
+            }
+            return tree;
+        }
+
+        void print_Tree_preOrder(BinaryTreeNode *tree)
+        {
+            if(tree)
+            {
+                cout << tree->val << " ";
+                print_Tree_preOrder(tree->left);
+                print_Tree_preOrder(tree->right);
+            }
+        }
+        int  TreeDepth(BinaryTreeNode *root)
+        {
+            if(!root) //判断链表不为空
+            {
+                return 0 ;
+            }
+            int nleft = TreeDepth(root->left);
+            int nright= TreeDepth(root->right);
+
+            return (nleft>nright)?(nleft+1):(nright+1);
+        }
+};
+
+int main()
+{
+    BinaryTreeNode *tree = NULL;
+        
+    Solution ss;
+    //创建二叉树
+    tree = ss.CreateBinaryTree(tree);
+    //先序遍历打印二叉树
+    //ss.print_Tree_preOrder(tree);
+    //cout << endl;
+    //按层打印二叉树
+    int depth_tree = ss.TreeDepth(tree);
+    cout << "树的深度为:" << depth_tree <<endl;
+}
