@@ -1,0 +1,108 @@
+/*
+如何删除链表中重复的元素
+判断当前节点和下一个节点的数据是否相同，若相同则说明该节点和下一个节点是重复节点。为了更好的实现这个操作，设置标志位todelelte。
+当todelelte为false时说明当前节点和下一个节点的数据不相同就继续遍历下一个节点元素
+当todelelte为true时说明当前节点和下一个节点的数据相同,想办法删除这两个相同数据的节点，此时记录该当前节点的数据为value
+1，这个时候定义一个节点命名为删除节点todelNode，然后进入while循环判断若该删除节点不为空并且该删除节点的数据和value值相同则删除，节点往后移动。因为下一个节点的数据和value值也相同，再次进入while循环，删除第二个相同数据节点，节点继续往后移动。
+另一个注意事项是:判断完该节点是否为重复节点之后，节点怎么往后移动
+情况一:当前节点和下一个节点数据相同，删除这两个节点，为了链表的连接性，还需要另一个操作就是把前序节点连接到下下一个节点上(pre->next = temp)。
+
+*/
+#include<iostream>
+using namespace std;
+
+struct ListNode {
+    int val;
+    struct ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
+class Solution {
+public:
+    // 删除链表中重复数字
+    ListNode* deleteDuplication(ListNode* pHead){
+        ListNode *pre = NULL;
+        ListNode *current = pHead;
+
+        if(pHead == NULL){
+            return NULL;
+        }
+        
+        while(current){
+            int value = current->val;
+            ListNode *temp = current -> next;
+            bool todelete = false;//设置标志位判断当前节点和下一个节点数据是否相同
+           //下一个节点不为空并且当前节点数据和下一个节点数据相同
+            if(temp != NULL && value == temp -> val){
+                todelete = true;//标志位为true
+            }  
+
+            if(!todelete){  // 当前节点和后一个节点不相同，即不重复
+                pre = current;//节点后移
+                current = current->next;
+            }
+            else{   // 当前节点和后一个节点重复
+                ListNode *todelNode = current;//把当前节点作为被删除节点
+                // 注意点，此处将判断非空放在前面，避免从空地址中取值
+                while(todelNode != NULL && value == todelNode->val){
+                    temp = todelNode -> next;//
+                    delete todelNode;  // 
+                    todelNode = temp;
+                }
+
+                if(pre == NULL){//前序节点为空，即若2,2,1这种情况
+                    pHead = temp;
+                }
+                else{//若两个节点数据相同则把前序节点连接到temp上
+                    pre -> next = temp;
+                }
+                current = temp;
+            }
+        }
+        return pHead;
+    }
+
+    // 输出链表
+    void PrintList(ListNode *head){
+        if(!head){
+            cout<<"链表为空"<<endl;
+        }
+        else{
+            while(head){
+                cout<<head->val<<" ";
+                head = head->next;
+            }
+            cout<<endl;
+        }
+    }
+
+    // 创建链表
+    ListNode* createList(){
+        int node[10] = {1, 2, 2};
+        int length = 3;
+        
+        ListNode *head ,*tail,*p;
+        head = tail = NULL;
+        for(int i=0; i < length; i++){
+            p = new ListNode(node[i]);
+            if(!head){
+                head = p;
+            }
+            else{
+                tail -> next = p;
+            }
+           tail = p;
+        }
+        return head;
+    }
+};//类方法最后要以分号结尾
+
+int main(){
+    Solution ss;
+    ListNode *head = NULL;
+    head = ss.createList();　　// 创建链表
+    ss.PrintList(head);　　　　// 输出链表
+    head = ss.deleteDuplication(head);  // 删除链表中重复数字
+    ss.PrintList(head);      // 输出链表
+    return 0;
+}
