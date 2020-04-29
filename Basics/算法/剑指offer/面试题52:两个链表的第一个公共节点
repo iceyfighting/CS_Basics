@@ -1,0 +1,126 @@
+/*
+若两个单向链表有公共节点，则说明这两个链表从某一个节点开始，它们的后继节点都指向同一个节点。
+因为每个单向链表的节点都只有一个后继节点，故从第一个公共节点开始，它们所有的节点都是重合的
+
+可以先遍历一次得到每个链表的长度，然后长链表先走多出的若干步。
+如上图所示:链表长度分别为5和4，长链表与短链表相比多一个节点，
+然后让长链表先走一步，到达节点2.接下来分别从节点2和节点4出发同时遍历两个结点，
+直到找到它们第一个相同的节点6.此时的时间复杂度为o(m+n)
+*/
+
+#include<iostream>
+using namespace std;
+
+struct ListNode{
+    int val;
+    ListNode* next;
+};
+
+class Solution {
+public:
+    ListNode* createList(int *array,int len)
+    {
+        ListNode *head,*tail,*p;
+        head = tail = NULL;
+        for(int i=0;i<len;i++)
+        {
+            p = new ListNode();
+            p->val = array[i];
+            p->next = NULL;
+            if(head==NULL)
+            {
+                head = p;
+                tail = head;
+            }
+            else
+            {
+                tail->next = p;
+                //tail = p;
+            }
+            tail = p;
+        }
+        return head;
+    }
+    
+    void printT(ListNode *head)
+    {
+        while(head)
+        {
+            cout<<head->val<<" ";
+            head = head->next;
+        }
+        cout<<endl;
+    }
+    
+    int GetListLength(ListNode* head)
+    {
+        int nLength = 0;
+        ListNode *pNode = NULL;
+        pNode = head;
+        while(pNode != NULL)
+        {
+            ++nLength;
+            pNode = pNode->next;
+        }
+        return nLength;
+    }
+    
+    ListNode* FindFirstCommonNode(ListNode* pHead1,ListNode* pHead2)
+    {
+        //寰楀埌涓や釜閾捐〃鐨勯暱搴?
+        int nLength1,nLength2;
+        nLength1 = GetListLength(pHead1);
+        nLength2 = GetListLength(pHead2);
+        int nLengthDif = 0;
+        //cout<<nLength1<<","<<nLength2<<endl;
+        ListNode *pListHeadLong = NULL;
+        ListNode *pListHeadShort= NULL;
+
+        if(nLength2>nLength1)
+        {
+            pListHeadLong = pHead2;
+            pListHeadShort= pHead1;
+            nLengthDif = nLength2-nLength1;
+        }
+        else
+        {
+            pListHeadLong = pHead1;
+            pListHeadShort= pHead2;
+            nLengthDif = nLength1-nLength2;
+        }
+        
+        //让长链表先前进nLengthDif步
+        for(int i=0;i<nLengthDif;i++)
+        {
+            pListHeadLong = pListHeadLong->next;
+        }
+      
+        while((pListHeadLong != NULL) && (pListHeadShort != NULL) && (pListHeadLong->val != pListHeadShort->val))
+        {
+            pListHeadLong = pListHeadLong->next;
+            pListHeadShort= pListHeadShort->next;
+        }
+        
+        ListNode *pFirstCommonNode = NULL;
+        pFirstCommonNode = pListHeadLong;
+        cout<<pFirstCommonNode->val<<endl;
+        return pFirstCommonNode;
+
+    }
+};
+
+
+int main()
+{
+    int a[]={1,3,5,7,9};
+    int b[]={2,4,7,9};
+    int len1 = 5;
+    int len2 = 4;
+    ListNode *head1 = NULL;
+    ListNode *head2 = NULL;
+    ListNode *head3 = NULL;
+    head1 = createList(a,len1);
+    head2 = createList(b,len2);
+    head3 = FindFirstCommonNode(head1,head2);
+    printT(head3);
+}
