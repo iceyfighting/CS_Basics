@@ -1,0 +1,115 @@
+/*
+ *- 首先分析怎么访问节点
+	因为路径是从根节点出发到叶节点的，所以只有前序遍历符合
+	- 使用什么数据类型存放路径中节点
+	当用前序遍历的方式访问某一节点时，将该节点添加到路径上，
+	1) 如果该节点为叶节点并且路径中节点值的和刚好等于输入的整数，则当前路径符合要求并打印。
+	2) 如果该节点不是叶节点，则继续访问它的子节点。
+	3) 若当前节点访问结束后，递归函数将自动回到它的父节点。因此，在函数退出之前要在路径上删除当前节点并减去当前节点的值，
+	以确保返回父节点时路径刚好是从根结点到父节点。发现，递归调用的本质就是压栈和出栈的过程。
+ * */
+#include<iostream>
+#include<stdlib.h>
+#include<vector>
+    using namespace std;
+
+    struct BinaryTreeNode{
+    int             val;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+    };
+
+
+    int Array_BinaryTree[] = {10,5,4,0,0,7,0,0,12,0,0};
+    int index_1 = 0;
+    class Solution{
+    public:
+        BinaryTreeNode*  CreateBinaryTree(BinaryTreeNode *tree)
+        {
+            int num = Array_BinaryTree[index_1++];
+            //cout << index_1 <<endl;//无递归结束的标志
+            if(num == 0)
+            {
+                tree = NULL;
+            }
+            else
+            {
+                tree = new BinaryTreeNode;
+                //cout << "11111"<<endl;
+                tree->val = num;
+                tree->left = CreateBinaryTree(tree->left);
+                tree->right= CreateBinaryTree(tree->right);
+            }
+            return tree;
+        }
+
+        void print_Tree_preOrder(BinaryTreeNode *tree)
+        {
+            if(tree)
+            {
+                cout << tree->val << " ";
+                print_Tree_preOrder(tree->left);
+                print_Tree_preOrder(tree->right);
+            }
+        }
+        void  FindDepth(BinaryTreeNode *root,int expectedSum)
+        {
+            if(!root) //判断链表不为空
+            {
+                return  ;
+            }
+            
+            vector<int> depth_node;
+            int current_sum=0;
+            FindDepth(root,current_sum,depth_node,expectedSum);
+        }
+
+        void FindDepth(BinaryTreeNode *root,int current_sum,vector<int> &depth_node,int expectedSum)
+        {
+            if(root)
+            {
+                current_sum = current_sum + root->val;
+            }
+            depth_node.push_back(root->val);
+            //当前节点是叶子结点，则判断路径节点和是否等于ExpectedSum
+            bool leaf_node = (root->left == NULL) && (root->right == NULL) && (current_sum == expectedSum);
+            if(leaf_node == 1)
+            {
+                cout << "a path is found:";
+                for(vector<int>::iterator it = depth_node.begin();it != depth_node.end();it++)
+                {
+                    cout << *it << " ";
+                }
+                cout << endl;
+            }
+            if(root->left)
+            {
+               FindDepth(root->left,current_sum,depth_node,expectedSum);
+            }
+            if(root->right)
+            {
+               FindDepth(root->right,current_sum,depth_node,expectedSum);
+            }
+            depth_node.pop_back();
+            //若相等，则从vector中输出
+            //若不相等，则递归回去，寻找别的节点
+            //删除结点
+        }
+};
+
+int main()
+{
+    BinaryTreeNode *tree = NULL;
+        
+    Solution ss;
+    //创建二叉树
+    tree = ss.CreateBinaryTree(tree);
+    //先序遍历打印二叉树
+    //ss.print_Tree_preOrder(tree);
+    //cout << endl;
+    //按层打印二叉树
+    int depth_sum = 22;
+    //cin >> depth_sum;
+    ss.FindDepth(tree,depth_sum);
+    //cout << "树的深度为:" << depth_tree <<endl;
+}
