@@ -1,0 +1,105 @@
+/*
+若链表中只有一个节点，怎么处理
+若链表中删除的节点是末尾节点，怎么处理
+若链表中删除的节点是中间节点，怎么处理
+
+*/
+#include<iostream>
+using namespace std;
+
+struct ListNode{
+    int  value;
+    ListNode *next;
+}  
+  
+  ListNode* createNode(ListNode *head)
+   {
+    ListNode *tail,*p;
+     int node[10]={2,3,4,5,1,7,8,0};
+     int length=8;
+     for(int i=0;i<length;i++)
+     {
+        p = new ListNode;
+        p->value = node[i];
+        p->next = NULL;
+      if(head == NULL)
+        {
+           head = p;
+           tail = head;
+        }
+       else{
+          tail->next = p;
+           tail = p;
+       }
+     }
+    return head;
+ }
+ //输出函数
+ void Output(ListNode *head){
+       ListNode *p;
+       p = head;
+      if(!p){
+         cout<<"链表为空"<<endl;
+     }
+       while(p){
+         cout<<p->value<<" ";
+          p = p->next;
+       }
+       cout<<endl;
+  }
+  
+  ListNode *DeleteNode(ListNode *head,ListNode *tobeDelete)
+ {  
+    if(!head || !tobeDelete){
+       cout<<"输入错误"<<endl;
+     }
+     else{
+        if(head == tobeDelete){//首元素为删除节点
+            head = NULL;
+            return head;
+       }
+        else if(tobeDelete->next){//非首元素或中间元素为删除节点
+            ListNode *temp;
+            temp = tobeDelete->next;
+            tobeDelete->value = temp->value;
+             tobeDelete->next = temp->next;
+             delete temp;
+        }else{//尾元素为删除节点
+              ListNode *pre;
+               ListNode *current;
+               pre = head;
+               current = pre->next;
+              while(current->next){
+                   pre = current;
+                  current = pre->next;
+              }
+              if(current == tobeDelete){
+                 current->next = NULL;
+                 delete current;
+              }
+         }
+     }
+    return head;
+ }
+
+ 
+ 
+ int main(){
+    ListNode *head,*tobeDelete;
+      head = NULL;
+      head = createNode(head);
+      Output(head);
+     int delete_number=3;
+      for(int i = 0;i<delete_number;i++)
+    {
+         if(i == 0)
+         {
+            tobeDelete = head;
+         }
+          else{
+            tobeDelete = tobeDelete->next;
+         }
+      }
+      head = DeleteNode(head,tobeDelete);
+     Output(head);
+ }
