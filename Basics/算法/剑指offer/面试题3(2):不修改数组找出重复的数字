@@ -35,6 +35,10 @@ class Solution
                 {
                     return left;
                 }
+                else
+                {
+                    return right;//针对数组{2, 2, 5, 4, 3, 2, 6, 7};这种有重复值为right，时
+                }
             }
 
             if(flag_dup)
