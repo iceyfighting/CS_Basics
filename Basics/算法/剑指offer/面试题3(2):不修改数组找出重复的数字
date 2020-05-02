@@ -35,10 +35,6 @@ class Solution
                 {
                     return left;
                 }
-                else
-                {
-                    return 0;
-                }
             }
 
             if(flag_dup)
