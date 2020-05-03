@@ -107,31 +107,43 @@ class Solution
             return result;
         }
 
-        void MoreThanHalfNum_2(const vector<int>& data,set_kthnum& leastNumbers,int kth_num)
+        vector<int> MoreThanHalfNum_2(const vector<int>& data,int kth_num)
         {
-            leastNumbers.clear();
+            vector<int> output;
+            
+            set<int ,greater<int> > tt;
+            set<int ,greater<int> >::iterator it;
             if(kth_num<1 || data.size()<kth_num)
             {
-                return;
+                return output;
             }
-            vector<int>::const_iterator iter = data.begin();
-            for(;iter!= data.end();++iter)
+            
+            for(int i = 0; i < data.size();++i)
             {
-                if(leastNumbers.size()<kth_num)
+                if(i < kth_num)
                 {
-                    leastNumbers.insert(*iter);
+                    tt.insert(data[i]);
                 }
                 else
                 {
-                    numIterator iterGreatest = leastNumbers.begin();
-                    if(*iter < *(leastNumbers.begin()))
-                    {
-                        leastNumbers.erase(iterGreatest);
-                        leastNumbers.insert(*iter);
-                    }
+                   it = tt.begin();
+                   
+                   if(*it > data[i])
+                   {
+                        tt.erase(it);
+                        tt.insert(data[i]);
+                   }
+                   
                 }
             }
+
+            for(it = tt.begin();it != tt.end();it++)
+            {
+                output.push_back(*it);
+            }
+            return output;
         }
+
 
 };
 
@@ -140,29 +152,38 @@ int main()
     Solution ss;
     int a[] = {4,5,1,6,2,7,3,8};
     SqList L;
-    vector<int> input;
-    
-    //typedef multiset<int,greater<int> > set_kthnum;
+    //-------------------------------------快排方式----------------------------
     int length = 8;
     for(int i = 0;i<length;i++)
     {
-        //L.a[i+1] = a[i];
+        L.a[i+1] = a[i];
+        
+    }
+    int more_half = ss.MoreThanHalfNum(&L,length); 
+    int kth_num = 4;
+    
+    for(int i = 0;i<length;i++)
+    {
+        if(a[i]<=more_half)
+        {
+            cout << a[i] << " ";
+        }
+    }
+    cout <<endl;
+    //-------------------------------------------------第二种容器方式----------------
+    vector<int> input;
+    
+    int length = 8;
+    for(int i = 0;i<length;i++)
+    {
+        
         input.push_back(a[i]);
     }
-    //int more_half = ss.MoreThanHalfNum(&L,length); 
     int kth_num = 4;
-    ss.MoreThanHalfNum_2(input,set_kthnum,kth_num); 
-    for(multiset<int,greater<int> >::iterator it = set_kthnum.begin();it!=set_kthnum.end();++it)
+    vector<int> output = ss.MoreThanHalfNum_2(input,kth_num); 
+    for(int i = 0;i<kth_num;++i)
     {
-        cout << *it << " ";
+        cout << output[i] << " ";
     }
-    //for(int i = 0;i<length;i++)
-    //{
-    //    if(a[i]<=more_half)
-    //    {
-    //        cout << a[i] << " ";
-    //    }
-    //}
     cout <<endl;
-    //cout << "数组中出现次数超过一半的数字" << more_half << endl;
 }
