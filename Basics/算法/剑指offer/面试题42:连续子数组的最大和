@@ -1,0 +1,54 @@
+#include<iostream>
+using namespace std;
+
+int GreateSubofArray(int *a,int length)
+{
+    if( (a == NULL) || (length < 0) )
+    {
+        return 0;
+    }
+    bool flag_sub = false;
+    int sum_sub = 0;
+    int greateSum = 0;
+    for(int i = 0;i<length;i++)
+    {
+        if(sum_sub < 0)
+        {//从第一个数字开始的子数组的和小于从第三个数字开始的子数组的和
+            sum_sub = a[i];
+        }
+        else
+        {
+            sum_sub+=a[i];
+        }
+
+        if(sum_sub > greateSum)
+        {
+            greateSum = sum_sub;
+        }
+    }
+    return greateSum;
+}
+
+int GreatestSubArray_2(int *a,int length)
+{
+    int max = 0;
+    int temp= 0;
+    if( (a == NULL) || (length<0))
+    {
+        return 0;
+    }
+    for(int i = 0;i<length;i++)
+    {
+        temp = temp+a[i] > a[i] ? temp+a[i]:a[i];
+        max  = max > temp ? max:temp; 
+    }
+    return max;
+}
+
+int main()
+{
+    int a[] = {1,-2,3,10,-4,7,2,-5};
+    int length = 8;
+    int sum = GreateSubofArray(a,length);
+    cout << "所有子数组的和的最大值:" << sum << endl;
+}
