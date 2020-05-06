@@ -1,0 +1,83 @@
+#include<iostream>
+#include<map>
+using namespace std;
+
+class Solution{
+    public:
+        int lengthOfLongestSubstring(string s)
+        {
+            if(s.empty())
+            {
+                return 0;
+            }
+            map<char ,int> mp;
+            int maxLength = 0;//最长不含重复字符的字符串长度
+            int curLength = 0;//当前不含重复字符的字符串长度
+
+            for(int i = 0;i< s.size();i++)
+            {   //第i个字符之前没有出现过
+                if(mp.find(s[i]) == mp.end())
+                { //map.find()查找关键字key是否存在，若存在则返回
+                  //该键的元素的迭代器，若不存则返回map.end()
+                    curLength++;
+                }
+                //第i个字符之前出现过
+                else if(i-mp[s[i]] <= curLength)
+                {
+                    maxLength = maxLength > curLength ? maxLength:curLength;
+                    curLength = i - mp[s[i]];
+                }
+                else
+                {
+                    curLength++;
+                }
+                mp[s[i]] = i;
+                maxLength = maxLength > curLength?maxLength:curLength;
+            }
+            return maxLength;
+        }
+
+        int longestSubstringWithoutDuplication(string s)
+        {
+            int curLength = 0;
+            int maxLength = 0;
+
+            int* position = new int[26];
+            for(int i = 0;i<26;++i)
+            {
+                position[i] = -1;
+            }
+            for(int i=0;i<s.length();++i)
+            {
+                int prevIndex = position[s[i]- 'a'];
+                if(prevIndex < 0 || i-prevIndex > curLength)
+                {
+                    ++curLength;
+                }
+                else
+                {
+                    if(curLength > maxLength)
+                    {
+                        maxLength = curLength;
+                    }
+                    curLength = i-prevIndex;
+                }
+                position[s[i]-'a'] = i;
+            }
+            if(curLength > maxLength)
+            {
+                maxLength = curLength;
+            }
+            delete[] position;
+            return maxLength;
+        }
+
+};
+
+int main()
+{
+    Solution ss;
+    string str = "arabcacfr";
+    cout << ss.lengthOfLongestSubstring(str) << endl;
+    cout << ss.longestSubstringWithoutDuplication(str) << endl;
+}
