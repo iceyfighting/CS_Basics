@@ -1,0 +1,75 @@
+class Solution{
+    public:
+        BinaryTreeNode*  CreateBinaryTree(BinaryTreeNode *tree)
+        {
+            char num = Array_BinaryTree[index_1++];
+            //cout << index_1 <<endl;//无递归结束的标志
+            if(num == '#')
+            {
+                tree = NULL;
+            }
+            else
+            {
+                
+                tree = new BinaryTreeNode;
+                tree->left = CreateBinaryTree(tree->left);
+                tree->val = num;
+                tree->right= CreateBinaryTree(tree->right);
+            }
+            return tree;
+        }
+
+        void print_Tree_preOrder(BinaryTreeNode *tree)
+        {
+            if(tree)
+            {
+                cout << tree->val << " ";
+                print_Tree_preOrder(tree->left);
+                print_Tree_preOrder(tree->right);
+            }
+        }
+
+        BinaryTreeNode* nodeTofind(BinaryTreeNode *tree)
+        {
+            if(tree->val != 'b')
+            {
+                //cout << tree->val << " ";
+                nodeTofind(tree->left);
+                nodeTofind(tree->right);
+            }
+            return tree;
+        }
+
+        BinaryTreeNode* GetNext(BinaryTreeNode* pNode)
+        {
+            BinaryTreeNode *p,*c,*next;
+            //判断
+            if(!pNode)
+            {
+                return NULL;
+            }
+            //节点有右子树，则下一个结点是右子树的最左子节点
+            if(pNode->right)
+            {
+                p = pNode->right;
+                while(p->left != NULL)
+                {
+                    p = p->left;
+                }
+                next = p;
+            } //节点没有右子树
+            else if(pNode->next != NULL)
+            {
+                p = pNode->next;//下一个结点是它父节点
+                c = pNode;
+                //既没有右子树，且是父节点的右子节点
+                while(p!=NULL && c == p->right)
+                {//找到父节点的左子节点存在，则该父节点是要找的下一个节点
+                    c = p;
+                    p = p->next;//沿着指向父节点向上遍历
+                }
+                next = p;
+            }
+            return next;
+        }
+};
