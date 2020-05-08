@@ -1,0 +1,46 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Solution{
+  public:
+    void Reverse(string &str,int left,int right)
+    {
+        while(left < right)
+        {
+            char temp = str[left];
+            str[left]   = str[right];
+            str[right]  = temp;
+
+            left++;
+            right--;
+        }
+    }
+    
+    string leftRotateString(string str ,int num)
+    {
+        int length = str.size();
+        int left = 0;
+        int right= 1;
+        Reverse(str,left,right);
+        
+        Reverse(str,num,length-1);
+        Reverse(str,left,length-1);
+        return str;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    string str = "abcdefg";
+    int num = 2;
+    string s = ss.leftRotateString(str,num);
+    //int i = 0;
+    for(int i = 0; i < s.size();i++)
+    {
+        cout << s[i];
+        
+    }
+    cout << endl;
+}
