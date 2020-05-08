@@ -1,0 +1,99 @@
+#include<iostream>
+using namespace std;
+
+class Solution{
+  public:
+    int getFirstk(int *sorted_array,int left,int right,int k)
+    {
+        if(left <= right)
+        {
+            int index = (left + right) >> 1;
+            int mid   = sorted_array[index];
+
+            if(k < mid)
+            {
+                right = index - 1;
+            }
+            else if(k > mid)
+            {
+                left  = index + 1;
+            }
+            else
+            {
+                if((index == 0) || (index > 0 && sorted_array[index-1]!= k))
+                {
+                    return index;
+                }
+                else
+                {
+                    right = index -1;
+                }
+            }
+            return getFirstk(sorted_array,left,right,k);
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    
+    int getLastk(int *sorted_array,int length,int left,int right,int k)
+    {
+        if(left <= right)
+        {
+            int index = (left + right) >> 1;
+            int mid   = sorted_array[index];
+
+            if(k<mid)
+            {
+                right = index - 1;
+            }
+            else if(k > mid)
+            {
+                left  = index + 1;
+            }
+            else{
+                if((index == length) || (index < length && sorted_array[index+1]!=k))
+                {
+                    return index;
+                }
+                else
+                {
+                    left = index +1;
+                }
+            }
+            return getLastk(sorted_array,length,left,right,k);
+        }
+        else{
+            return -1;    
+        }
+    }
+
+    int getNumberk(int *sorted_array,int length,int k)
+    {
+        if(length == 0)
+        {
+            return 0;
+        }
+        int first = 0;
+        int last  = 0;
+        first = getFirstk(sorted_array,0,length-1,k);
+        last  = getLastk(sorted_array,length-1,0,length-1,k);
+
+        if(first != -1 && last != -1)
+        {
+            return last-first+1;
+        }
+        return 0;
+    }
+    
+};
+
+int main()
+{
+    Solution ss;
+    int sorted_array[] = {1,2,3,3,3,3,4,5};
+    int length = 8;
+    int k      = 3;
+    cout << ss.getNumberk(sorted_array,length,k) << endl;
+}
