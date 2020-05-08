@@ -1,0 +1,53 @@
+#include<iostream>
+using namespace std;
+
+class Solution{
+    public:
+        bool findNumwithSum(int *a,int length,int *num1,int *num2,int sum)
+        {
+            bool found = false;
+            if(length < 1 || num1 == NULL || num2 == NULL)
+            {
+                return found;
+            }
+
+            int ahead = length-1;
+            int behind = 0;
+            while(ahead > behind)
+            {
+                long long curSum = a[ahead] + a[behind];
+                if(curSum == sum)
+                {
+                    *num1 = a[behind];
+                    *num2 = a[ahead];
+                    found = true;
+                    break;
+                }
+                else if(curSum > sum)
+                {
+                    ahead--;
+                }
+                else
+                {
+                    behind++;
+                }
+            }
+            return found;
+        }
+};
+
+
+int main()
+{
+    Solution ss;
+    int a[] = {1,2,4,7,11,15};
+    int length = 6;
+    int num1 ;
+    int num2 ;
+    int numSum = 15;
+    if(ss.findNumwithSum(a,length,&num1,&num2,numSum))
+	{
+		cout << "和为s的两个数字存在" << endl;
+	}
+    cout << " num1:" << num1 << " num2:" << num2 << endl;
+}
