@@ -1,0 +1,94 @@
+/*
+ * */
+#include<iostream>
+#include<stdlib.h>
+#include<vector>
+using namespace std;
+
+struct BinaryTreeNode{
+    char             val;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+};
+vector<BinaryTreeNode *> nodeArray;
+
+
+char Array_BinaryTree[] = "521##4##76##8##";
+int index_1 = 0;
+class Solution{
+public:
+    BinaryTreeNode*  CreateBinaryTree(BinaryTreeNode *tree)
+    {
+        char num = Array_BinaryTree[index_1++];
+        //cout << index_1 <<endl;//无递归结束的标志
+        if(num == '#')
+        {
+            tree = NULL;
+        }
+        else
+        {
+            tree = new BinaryTreeNode;
+           
+            tree->val = num;
+            tree->left = CreateBinaryTree(tree->left);
+            tree->right= CreateBinaryTree(tree->right);
+        }
+        return tree;
+    }
+
+    void print_Tree_preOrder(BinaryTreeNode *tree)
+    {
+        if(tree)
+        {
+            print_Tree_preOrder(tree->left);
+            
+            cout << tree->val << " ";
+            print_Tree_preOrder(tree->right);
+        }
+    }
+    
+    BinaryTreeNode* kthNodeCore(BinaryTreeNode *tree,int& k)
+    {
+        BinaryTreeNode* target = NULL;
+        if(tree->left != NULL)
+        {
+            target = kthNodeCore(tree->left,k);
+        }
+        if(target == NULL)
+        {
+            if(k == 1)
+            {
+                target = tree;
+            }
+            k--;
+        }
+        if(target == NULL && tree->right != NULL)
+        {
+            target = kthNodeCore(tree->right,k);
+        }
+        return target;
+    }
+
+    BinaryTreeNode* kthNode(BinaryTreeNode *tree,int k)
+    {
+        if(tree == NULL || k == 0)
+        {
+            return NULL;
+        }
+        return kthNodeCore(tree,k);
+    }
+};
+
+int main()
+{
+    BinaryTreeNode *tree = NULL;
+        
+    Solution ss;
+    //创建二叉树
+    tree = ss.CreateBinaryTree(tree);
+    cout << endl;
+    //ss.print_Tree_preOrder(tree);
+    int k = 3;
+    BinaryTreeNode *kthNode = ss.kthNode(tree,k);
+    cout << "第k大的节点: " << kthNode->val << endl;
+}
