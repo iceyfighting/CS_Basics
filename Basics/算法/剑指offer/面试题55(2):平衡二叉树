@@ -1,0 +1,96 @@
+#include<iostream>
+#include<stdlib.h>
+#include<stack>
+    using namespace std;
+
+    struct BinaryTreeNode{
+    int             val;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+    };
+
+
+    int Array_BinaryTree[] = {1,2,4,0,0,5,7,0,0,0,3,0,6,0,0};
+    int index_1 = 0;
+    class Solution{
+    public:
+        BinaryTreeNode*  CreateBinaryTree(BinaryTreeNode *tree)
+        {
+            int num = Array_BinaryTree[index_1++];
+            //cout << index_1 <<endl;//无递归结束的标志
+            if(num == 0)
+            {
+                tree = NULL;
+            }
+            else
+            {
+                tree = new BinaryTreeNode;
+                //cout << "11111"<<endl;
+                tree->val = num;
+                tree->left = CreateBinaryTree(tree->left);
+                tree->right= CreateBinaryTree(tree->right);
+            }
+            return tree;
+        }
+
+        void print_Tree_preOrder(BinaryTreeNode *tree)
+        {
+            if(tree)
+            {
+                cout << tree->val << " ";
+                print_Tree_preOrder(tree->left);
+                print_Tree_preOrder(tree->right);
+            }
+        }
+
+        bool IsBalanced(BinaryTreeNode* pRoot)
+        {
+            int depth = 0;
+            return IsBalanced(pRoot,&depth);
+        }
+        bool IsBalanced(BinaryTreeNode* pRoot,int *pDepth)
+        {
+            if(pRoot == NULL)
+            {
+                *pDepth = 0;
+                return true;
+            }
+
+            int left,right;
+            //cout << "left: " << *left << "right: " << *right << endl;
+            if(IsBalanced(pRoot->left,&left) && IsBalanced(pRoot->right,&right))
+            {
+                int diff = left - right;
+                if(diff<=1 && diff>=-1)
+                {
+                    *pDepth = 1+ (left>right?left:right);
+                    return true;
+                }
+            }
+
+            cout << "left: " << left << "right: " << right << endl;
+            return false;
+        }
+};
+
+int main()
+{
+    BinaryTreeNode *tree = NULL;
+        
+    Solution ss;
+    //创建二叉树
+    tree = ss.CreateBinaryTree(tree);
+    //先序遍历打印二叉树
+    //ss.print_Tree_preOrder(tree);
+    //cout << endl;
+    //按层打印二叉树
+    bool isBalance = ss.IsBalanced(tree);
+    if(isBalance)
+    {
+        cout << "该树是平衡二叉树" << endl;
+    }
+    else
+    {
+        cout << "该树不是平衡二叉树" << endl;
+    }
+}
