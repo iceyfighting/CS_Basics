@@ -1,0 +1,66 @@
+/*
+##题目
+实现一个函数，把字符串中的每个空格替换成“%20”。例如，输入“We are happy.”，则输出“We%20are%20happy.”。
+##解题思路
+1) 考虑字符串是否可以覆盖，并且字符串中是否留有足够多的空间。
+2) 定义两个数组索引下标。首先遍历字符串计算出空格的数量，然后计算出替换后字符串的长度newlen。
+3)这样原长度为len，替换后字符串长度为newlen。进一步定义两个数组索引下标indexOrig和indexNew分别对应原字符串尾部和新字符串尾部
+4)让这两个索引下标向左移动，当indexOrig遇到空格时，indexNew对应的字符串位置插入“%20”。
+5) 结束的标志:当原索引下标为0时遍历结束
+
+
+*/
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+class Solution{
+  public:
+    void replaceBlank(char* str,int len)
+    {
+        if(str == NULL)
+        {
+            return ;
+        }
+        //int len = str.size();
+        int blankNum = 0;
+        int *p;
+        for(int i = 0; i< len;i++)
+        {
+            if(str[i] == ' ')
+            {
+                blankNum++;
+            }
+        }
+        int newLen = len + 2*blankNum;;
+        int indexOrig = len;
+        int indexNew  = newLen;
+        while(indexOrig >=0 && indexNew > indexOrig)
+        {
+            if(str[indexOrig] == ' ')
+            {
+                str[indexNew--]='0';
+                str[indexNew--]='2';
+                str[indexNew--]='%';
+            }
+            else
+            {
+                str[indexNew--] = str[indexOrig];
+            }
+            --indexOrig;
+        }
+    }
+};
+
+int main()
+{
+    Solution ss;
+    char str[100] = "We are happy";
+
+    ss.replaceBlank(str,strlen(str));
+    for(int i = 0;i<strlen(str);i++)
+    {
+        cout << str[i];
+    }
+    cout << endl;
+}
