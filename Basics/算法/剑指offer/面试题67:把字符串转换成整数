@@ -2,8 +2,7 @@
 #include<limits.h>
 using namespace std;
 
-int MAX_VALUE = 2^31-1;
-int MIN_VALUE = -2^31;
+
 class Solution{
   public:
     int strToint(string str)
@@ -45,7 +44,7 @@ class Solution{
         {
             result = result + (str[0] - '0')*digit;
         }
-        if(result > MAX_VALUE || result < MIN_VALUE)
+        if(result > INT_MAX || result < INT_MIN)
         {
             result = 0;
         }
