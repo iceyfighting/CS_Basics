@@ -1,75 +1,146 @@
-class Solution{
-    public:
-        BinaryTreeNode*  CreateBinaryTree(BinaryTreeNode *tree)
-        {
-            char num = Array_BinaryTree[index_1++];
-            //cout << index_1 <<endl;//无递归结束的标志
-            if(num == '#')
-            {
-                tree = NULL;
-            }
-            else
-            {
-                
-                tree = new BinaryTreeNode;
-                tree->left = CreateBinaryTree(tree->left);
-                tree->val = num;
-                tree->right= CreateBinaryTree(tree->right);
-            }
-            return tree;
-        }
+/**
+ *
+ * brief: 中序遍历测试树的下一个节点
+ * date:  2020/05/08
+ */
 
-        void print_Tree_preOrder(BinaryTreeNode *tree)
-        {
-            if(tree)
-            {
-                cout << tree->val << " ";
-                print_Tree_preOrder(tree->left);
-                print_Tree_preOrder(tree->right);
-            }
-        }
+#include<iostream>
+#include<string.h>
+using namespace std;
 
-        BinaryTreeNode* nodeTofind(BinaryTreeNode *tree)
-        {
-            if(tree->val != 'b')
-            {
-                //cout << tree->val << " ";
-                nodeTofind(tree->left);
-                nodeTofind(tree->right);
-            }
-            return tree;
-        }
-
-        BinaryTreeNode* GetNext(BinaryTreeNode* pNode)
-        {
-            BinaryTreeNode *p,*c,*next;
-            //判断
-            if(!pNode)
-            {
-                return NULL;
-            }
-            //节点有右子树，则下一个结点是右子树的最左子节点
-            if(pNode->right)
-            {
-                p = pNode->right;
-                while(p->left != NULL)
-                {
-                    p = p->left;
-                }
-                next = p;
-            } //节点没有右子树
-            else if(pNode->next != NULL)
-            {
-                p = pNode->next;//下一个结点是它父节点
-                c = pNode;
-                //既没有右子树，且是父节点的右子节点
-                while(p!=NULL && c == p->right)
-                {//找到父节点的左子节点存在，则该父节点是要找的下一个节点
-                    c = p;
-                    p = p->next;//沿着指向父节点向上遍历
-                }
-                next = p;
-            }
-            return next;
-        }
+struct TreeNode{
+    char val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    struct TreeNode *parent; // 父节点
 };
+char node[100] = "abd##eh##i##cf##g##";
+int index_1 = 0;
+
+//struct TreeNode arrayTreeNode[100];
+struct TreeNode *arrayTreeNode[100];
+int index_2 = 0;
+
+// 前序遍历 创建树
+struct TreeNode* createTree()
+{
+    char temp = node[index_1++];
+    if(temp == '#' )
+    {
+        return NULL;    
+    }
+    else
+    {
+        struct TreeNode *p = new struct TreeNode;
+        p->val = temp;
+        p->left = createTree();
+        p->right = createTree();
+        p->parent = NULL;
+        return p;
+    }
+}
+
+// 中序遍历树
+void zhongxu_print(struct TreeNode *head)
+{
+    if(head != NULL)
+    {
+       zhongxu_print(head->left);
+       cout << head->val << " ";
+       //arrayTreeNode[index_2++] = *head;
+       arrayTreeNode[index_2++] = head;
+       zhongxu_print(head->right);
+    }
+}
+
+// 输出数组
+void array_print()
+{
+    for(int i = 0; i < index_2; ++i) 
+    {
+        //cout << arrayTreeNode[i].val << " "; 
+        //cout << arrayTreeNode[i]->val << " "; 
+        cout << (*arrayTreeNode[i]).val << " "; 
+    }
+    cout << endl;
+}
+
+// 根据树结构和节点数组，对父节点赋值
+// 0 1 2 3 4 5 6 7 8
+// d b h e i a f c g
+void fuzhi_parent()
+{
+    arrayTreeNode[0]->parent = arrayTreeNode[1];
+    arrayTreeNode[1]->parent = arrayTreeNode[5];
+    arrayTreeNode[2]->parent = arrayTreeNode[3];
+    arrayTreeNode[3]->parent = arrayTreeNode[1];
+    arrayTreeNode[4]->parent = arrayTreeNode[3];
+    arrayTreeNode[5]->parent = NULL;
+    arrayTreeNode[6]->parent = arrayTreeNode[7];
+    arrayTreeNode[7]->parent = arrayTreeNode[5];
+    arrayTreeNode[8]->parent = arrayTreeNode[7];
+}
+
+TreeNode* GetNext(TreeNode* pNode)
+{
+     TreeNode *p,*c,*parent;
+    //判断
+     if(NULL == pNode)
+     {
+         return NULL;
+     }
+     //节点有右子树，则下一个结点是右子树的最左子节点
+     if(NULL != pNode->right)
+     {
+          p = pNode->right;
+          while(NULL != p->left)
+          {
+               p = p->left;
+          }
+          parent = p;
+     } //节点没有右子树
+     else if(pNode->parent != NULL)
+    {
+           p = pNode->parent;//下一个结点是它父节点
+           c = pNode;
+          //既没有右子树，且是父节点的右子节点
+           while(p!=NULL && c == p->right)
+           {//找到父节点的左子节点存在，则该父节点是要找的下一个节点
+               c = p;
+               p = p->parent;//沿着指向父节点向上遍历
+           }
+           parent = p;
+     }
+     return parent;
+}
+
+
+int main()
+{
+    // 第一步：创建一棵树
+    struct TreeNode *head;
+    head = createTree();
+
+    // 第二步：中序遍历树
+    zhongxu_print(head);
+    cout << endl;
+
+    // 第三步：验证array
+    array_print();
+
+    // 第四步：赋值父节点
+    fuzhi_parent();
+    cout << arrayTreeNode[0]->parent->val << endl;
+    cout << arrayTreeNode[1]->parent->val << endl;
+    cout << arrayTreeNode[2]->parent->val << endl;
+
+    // 第五步：验证
+    struct TreeNode *p = GetNext(arrayTreeNode[1]);
+    cout << p->val << endl;
+}
+
+
+
+
+
+
