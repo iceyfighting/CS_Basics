@@ -1,0 +1,88 @@
+/*
+##题目
+两个队列实现一个栈
+##解题思路
+1) 依次把数据a、b、c放入队列queue1中。如果我们按照栈的规则取出一个元素，
+应该取出a，但是队列queue1中只能从c、b、a的顺序输出。
+2) 此时应把队列queue2拿出来使用啦。可以先把b、c从队列queue1中弹出放入queue2中，
+这样就可以从queue1中取出最后一个元素。
+*/
+
+#include<iostream>
+#include<queue>
+using namespace std;
+
+class Solution{
+    public:
+        void push(int node)
+        {
+            //判断队列1是否为空
+            if(queue1.empty()&& queue2.empty())
+            {
+                queue1.push(node);
+            }
+            else
+            {   //queue1为空时
+                if(!queue1.empty())
+                {
+                    queue1.push(node);
+                }
+                else //queue1不为空，queue2为空
+                {
+                    queue2.push(node);
+                }
+            }
+        }
+
+        int pop()
+        {
+            int data;
+            //若栈1不为空
+            if(!queue1.empty())
+            {
+                int len = queue1.size()-1;
+                for(int i = 0;i<len ;i++)
+                {
+                    queue2.push(queue1.front());
+                    queue1.pop();
+                }
+                data = queue1.front();
+                queue1.pop();
+            } //栈1为空时
+            else 
+            {
+                int len = queue2.size() - 1;
+                for(int i = 0;i < len;i++)
+                {
+                    queue1.push(queue2.front());
+                    queue2.pop();
+                }
+                data = queue2.front();
+                queue2.pop();
+            }
+            return data;
+        }
+    private:
+        queue<int> queue1;
+        queue<int> queue2;
+
+};
+
+int main()
+{
+    Solution ss;
+    ss.push(1);
+    ss.push(2);
+    ss.push(3);
+    ss.push(4);
+    ss.push(5);
+    cout << ss.pop();
+    cout << ss.pop();
+    //ss.push(4);
+    cout << ss.pop();
+    //ss.push(5);
+    cout << ss.pop();
+    cout << ss.pop();
+    cout << endl;
+
+}
