@@ -1,0 +1,264 @@
+/*
+##题目
+设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。
+路径可以从矩阵中的任意一格开始，每一步可以在矩阵中向左、右、上、下移动一格。
+如果一条路径经过矩阵的某一格，那么该路径不能再次进入该格子。
+##解题思路
+1) 从矩阵的左上角作为路径的起点。
+2) 如果矩阵中某个格子的字符为‘a’，并且这个格子正好对应路径上的第i个字符。
+那么下一步就是到相邻格子寻找路径上的第i+1个字符。重复这个过程，直到路径上所有字符都在矩阵中找到相应的位置。
+3) 需要定义一个和字符矩阵同样大小的布尔值矩阵，来识别路径是否已经进入每个格子。
+
+*/
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+//--------------------------------------二维数组方式
+#define rows 3
+#define cols 4
+
+class Solution{
+  public:
+    void init_visited(int visited[][cols])
+    {
+        for(int i=0;i<rows;i++)
+        {
+            for(int j=0;j<cols;j++)
+            {
+                visited[i][j]=0;
+            }
+        }
+    }
+    
+    bool hasPathCore(int row,int col,char matrix[][cols],int visited[][cols],char* str,int length)
+    {
+        bool up,down,left,right;
+        if(matrix[row][col] == str[length])
+        {
+            visited[row][col] = 1;
+            length+=1;
+            if(strlen(str) == length)
+            {
+                return true;
+            }
+            //向上找
+            if(row>0 && visited[row-1][col] == 0)
+            {
+                up = hasPathCore(row-1,col,matrix,visited,str,length);
+            }
+            else
+            {
+                up = false;
+            }
+            //下
+            if(row < rows-1 && visited[row+1][col] == 0)
+            {
+                down = hasPathCore(row+1,col,matrix,visited,str,length);
+            }
+            else
+            {
+                down = false;
+            }
+
+            //左
+
+            if(col > 0 && visited[row][col-1] == 0)
+            {
+                left = hasPathCore(row,col-1,matrix,visited,str,length);
+            }
+            else
+            {
+                left = false;
+            }
+            //右
+
+            if(col < cols-1 && visited[row][col+1] == 0)
+            {
+                right = hasPathCore(row,col+1,matrix,visited,str,length);
+            }
+            else
+            {
+                right = false;
+            }
+            //只要上下左右出现一个true就可以
+            if(up || down || left || right)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool hasPath(char matrix[][cols],char* str)
+    {
+        if(matrix == NULL || rows < 1 || cols < 1 || str == NULL)
+        {
+            return false;
+        }
+        int length = 0;
+        int visited[rows][cols]; //标识路径是否已进入每个格子
+        init_visited(visited);
+
+        for(int i=0;i<rows;i++)
+        {
+            for(int j=0;j<cols;j++)
+            {
+                if(hasPathCore(i,j,matrix,visited,str,length))
+                {
+                    for(int k = 0;k < rows;k++)
+                    {
+                        for(int n = 0;n < cols;n++)
+                        {
+                            cout << visited[k][n] << " ";
+                        }
+                        cout << endl;
+                    }
+                    return true;
+                }
+                //消除在visited中上一个格子走过的路径(全部为0)
+                init_visited(visited);
+            }
+        }
+        return false;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    char matrix[rows][cols]= {{'a','b','t','g'},
+                               {'c','f','c','s'},
+                               {'j','d','e','h'}};
+    char str[20] = "bfce";
+    bool flag;
+    flag = ss.hasPath(matrix,str);
+    if(flag)
+    {
+        cout << "存在一条包含某字符串所有字符的路径" << endl;
+    }
+    else
+    {
+        cout << "不存在一条包含某字符串所有字符的路径"<<endl;
+    }
+}
+//----------------------------二维数组转为一维数组的方式
+class Solution{
+  public:
+    void init_visited(int *visited,int size)
+    {
+        for(int i=0;i<size;i++)
+        {
+            visited[i] = 0;
+        }
+    }
+    
+    bool hasPathCore(int row,int col,int rows,int cols,char *matrix,int *visited,char* str,int length)
+    {
+        bool up,down,left,right;
+        if(matrix[row*cols+col] == str[length])
+        {
+            visited[row*cols+col] = 1;
+            length+=1;
+            if(strlen(str) == length)
+            {
+                return true;
+            }
+            //向上找
+            if(row>0 && visited[(row-1)*cols+col] == 0)
+            {
+                up = hasPathCore(row-1,col,rows,cols,matrix,visited,str,length);
+            }
+            else
+            {
+                up = false;
+            }
+            //下
+            if(row < rows-1 && visited[(row+1)*cols+col] == 0)
+            {
+                down = hasPathCore(row+1,col,rows,cols,matrix,visited,str,length);
+            }
+            else
+            {
+                down = false;
+            }
+
+            //左
+
+            if(col > 0 && visited[row*cols+col-1] == 0)
+            {
+                left = hasPathCore(row,col-1,rows,cols,matrix,visited,str,length);
+            }
+            else
+            {
+                left = false;
+            }
+            //右
+
+            if(col < cols-1 && visited[row*cols+col+1] == 0)
+            {
+                right = hasPathCore(row,col+1,rows,cols,matrix,visited,str,length);
+            }
+            else
+            {
+                right = false;
+            }
+            //只要上下左右出现一个true就可以
+            if(up || down || left || right)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool hasPath(char* matrix,int rows,int cols,char* str)
+    {
+        if(matrix == NULL || rows < 1 || cols < 1 || str == NULL)
+        {
+            return false;
+        }
+        int length = 0;
+        int visited[rows*cols]; //标识路径是否已进入每个格子
+        init_visited(visited,rows*cols);
+        for(int i=0;i<rows;i++)
+        {
+            for(int j=0;j<cols;j++)
+            {
+                if(hasPathCore(i,j,rows,cols,matrix,visited,str,length))
+                {
+                    for(int k = 0;k < rows*cols;k++)
+                    {
+                        cout << visited[k] << " ";
+                    }
+                    cout << endl;
+                    return true;
+                }
+                //消除在visited中上一个格子走过的路径(全部为0)
+                init_visited(visited,rows*cols);
+            }
+        }
+        return false;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    int rows = 3;
+    int cols = 4;
+    char matrix[rows * cols]= {'a','b','t','g',
+                               'c','f','c','s',
+                               'j','d','e','h'};
+    char str[20] = "bfce";
+    bool flag;
+    flag = ss.hasPath(matrix,rows,cols,str);
+    if(flag)
+    {
+        cout << "存在一条包含某字符串所有字符的路径" << endl;
+    }
+    else
+    {
+        cout << "不存在一条包含某字符串所有字符的路径"<<endl;
+    }
+}
