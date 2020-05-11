@@ -1,0 +1,117 @@
+/*
+##题目
+输入数字n，按顺序打印出从1到最大的n位十进制数。比如输入3，则打印出1、2、3一直到最大的3位数999.
+- 字符串解决大数问题
+让字符串中每个字符都是‘0’~‘9’之间的某一个字符，用来表示数字中的一位。因为数字最大是n位，
+因此需要一个长度为n+1的字符串(字符串最后一位是结束符‘\0’)。当实际数字不够n位时，在字符串的前半部分补0。
+1) 字符串表达式中每个数字都初始化为‘0’
+2) 在字符串表达的数字上模拟加法
+3) 字符串表达式的数字打印出来
+-  将问题转换成数字排序的解法，用递归
+若在数字前面补0，会发现n位所有十进制就是n个从0到9的全排列。也就是说把数字的每一位都从0到9排列一遍，
+就得到所有的十进制数，只是在打印的时候，排在前面的0不打印出来。
+*/
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+class Solution{
+  public:
+        //---------------字符串方式---------------
+        bool Icreament_Digits(char *number,int length)
+        {
+            bool isOverflow = false;
+            int  isTakeOver = 0;
+            int  sum        = 0;
+            cout << "length:" << length << endl;
+            for(int i=length; i >=0;i--)
+            {
+                sum = number[i]- '0' + isTakeOver;
+                if(i == length) //字符串的长度不变
+                {
+                    sum++;
+                }
+
+                cout <<"i: "<<i<< " number[i]: " <<number[i] << " sum: " << sum << endl;
+                if(sum >= 10)
+                {
+                    if(i == 0)
+                    {
+                        isOverflow = true;
+                    }
+                    else
+                    {
+                        number[i] = sum%10 + '0';
+                        isTakeOver = 1;
+                    }
+                }
+                else
+                {
+                    number[i] = sum + '0';
+                    break;
+                }
+
+                //cout << "number[i]: " <<number[i] << " sum: " << sum << endl;
+            }
+            return isOverflow;
+        }
+        void PrintNumber(char *number,int length)
+        {
+            bool isZero = true;
+            for(int i = 0;i<=length;i++)
+            {
+                if(number[i] != '0')
+                {
+                    isZero = false;
+                }
+                if(!isZero)
+                {
+                    cout << number[i];
+                }
+            }
+            cout << endl;
+        }
+        
+        void print1ToN_1(int n)
+        {
+            char *number = new char[n+1];
+            memset(number,'0',n);
+            //cout << *number << endl;
+            number[n+1] = '\0';
+            while(! Icreament_Digits(number,n-1))
+            {
+                PrintNumber(number,n-1);
+            }
+            delete[] number;
+        }
+        //-------------------递归方式--------------
+        void print1ToNCore(char *number,int length,int index)
+        {
+            if(index == length)
+            {
+                PrintNumber(number,length);
+            }
+            else
+            {
+                for(int i = 0;i<10;i++)
+                {
+                    number[index] = i + '0';
+                    print1ToNCore(number,length,index+1);
+                }
+            }
+        }
+        void print1ToN_2(int n)
+        {
+            char *number = new char[n-1];
+            memset(number,'0',n);
+            number[n]='\0';
+            print1ToNCore(number,n,0);
+            delete[] number;
+        }
+};
+
+int main()
+{
+    Solution ss;
+    ss.print1ToN_2(2) ;
+}
