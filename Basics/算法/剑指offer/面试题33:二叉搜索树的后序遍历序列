@@ -1,0 +1,88 @@
+/*
+##题目
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。
+如果是则返回true，否则返回false。假设输入的数组的任意两个数字都互不相同。
+例如，输入数组{5,7,6,9,11,10,8}，则返回true，因为这个整数序列是如下图二叉搜索树的后序遍历结果。
+如果输入的数组是{7,4,6,5}，则由于没有哪棵二叉搜索树的后序遍历结果是这个序列，因此返回false.
+##解题思路
+1) 该二叉树是二叉搜索树，意味着该树是有序的。进一步解释为该树如果有左子树，则左子树所有节点的值均小于根节点的值，
+如果该树有右子树，则右子树所有节点的值均大于根节点的值。
+2) 根据二叉搜索树的性质，我们很容易根据数组中末尾元素找到树的左右子树。
+再以同样的方法确定与数组每一部分对应的子树的结构。
+3) 如果右子树中出现比根节点小的数据，则返回false。
+4) 采用递归，递归结束的标志位left==rigth.
+*/
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+
+class Solution{
+    public:
+        bool core(vector<int> &sequence,int left,int right)
+        {
+            int flag = left;
+            bool rchild = false; //判断是否有右子树
+            //界限处理，left=right表明就一个节点，
+            if(left >= right)
+            {
+                return true;
+            }
+            //sequence[right]是根节点，找到根节点的左子树
+            for(int i = left;i<right;i++)
+            {
+                if(sequence[i] > sequence[right])
+                {
+                    flag = i;
+                    rchild = true;
+                    break;
+                }
+            }
+            //进入此表明此树没有右子树，根本没有进入上一个for里面的if
+            if(rchild == false)
+            {
+
+            }
+            else //此树有右子树
+            {
+                for(int i = flag;i<right;i++)
+                {
+                    if(sequence[i] < sequence[right])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return core(sequence,left,flag-1)&&core(sequence,flag,right-1);
+        }
+        bool verifySquenceofBST(vector<int> sequence)
+        {
+            if(sequence.size() == 0)
+            {
+                return false;
+            }
+            return core(sequence,0,sequence.size()-1);
+        }
+};
+
+int main()
+{
+    Solution ss;
+    int a[] = {5,7,6,9,11,10,8};
+    int length = 7;
+    vector<int> sequence;
+    for(int i = 0;i<length;i++)
+    {
+        sequence.push_back(a[i]);
+    }
+    bool flag =  ss.verifySquenceofBST(sequence);
+    if(flag)
+    {
+        cout << "该数组是二叉搜索树的后续遍历" << endl;
+    }
+    else
+    {
+        cout << "该数组不是二叉搜索树的后序遍历" <<endl;
+    }
+}
