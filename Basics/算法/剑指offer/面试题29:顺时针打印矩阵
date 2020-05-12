@@ -1,0 +1,88 @@
+
+/*
+##题目
+输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每个数字。
+##解题思路
+1) 循环继续的条件是**columns>startX\*2且startY\*2**
+2) 打印分四步，每一步根据起始坐标和终止坐标用一个循环打印一行或一列
+第一步:从左到右打印一行
+第二步:从上到下打印一列，
+前提条件是终止行号大于起始行号**start < endY**
+第三步:从右到左打印一行，前提条件是圈内至少有两行两列，终止行号大于起始行号，
+终止列号大于起始列号。**start < endX && start < endY**
+第四步:从下到上打印一列，前提条件是至少有三行两列，终止行号比起始行号至少大2，
+同时终止列号大于起始列号。**start < endX && start < endY-1**
+*/
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+#define rows  4
+#define columns  4
+
+class Solution{
+  public:
+    
+    void printMatrixincircle(int numbers[][columns],int start)
+    {
+        int endX = columns - 1 - start;
+        int endY = rows - 1 - start;
+        //从左到右打印一行
+        for(int i = start;i<=endX;++i)
+        {
+            int number = numbers[start][i];
+            cout << number << " ";
+        }
+        //从上到下打印一列
+        if(start < endY)
+        {
+            for(int i = start + 1;i<= endY;++i)
+            {
+                int number = numbers[i][endX];
+                cout << number << " ";
+            }
+        }
+        //从右往左打印一行
+        if(start < endX && start < endY)
+        {
+            for(int i = endX-1;i>=start;--i)
+            {
+                int number = numbers[endY][i];
+                cout << number << " ";
+            }
+        }
+        //从下往上打印一列
+        if(start < endX && start < endY-1)
+        {
+            for(int i = endY -1;i>=start+1;--i)
+            {
+                int number = numbers[i][start];
+                cout << number << " ";
+            }
+        }
+    }
+
+    void printMatrixClockwisely(int numbers[][columns])
+    {
+        if(numbers == NULL || columns <= 0 || rows <= 0)
+        {
+            return;
+        }
+        int start = 0;
+        while(columns>start *2 && rows>start *2)
+        {
+            printMatrixincircle(numbers,start);
+            ++start;
+        }
+    }
+};
+
+int main()
+{
+    Solution ss;
+    int matrix[rows][columns] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
+    ss.printMatrixClockwisely(matrix);
+    cout << endl;
+    //int sumNum;
+    //sumNum = ss.movingCount(threshold,rows,cols);
+}
