@@ -1,0 +1,202 @@
+/*
+##题目
+地上有一个m行n列的方格。一个机器人从坐标(0,0)的格子开始移动，
+它每次可以向左、右、上、下移动一格，但不能进入行坐标和列坐标的数位之和大于k的格子。
+例如，当k为18时，机器人能够进入方格(35,37)，因为3+5+3+7=18。但它不能进入方格(35,38)，
+因为3+5+3+8=19.请问该机器人能够到达多少个格子？
+##解题思路
+1) 明白题目含义:**行坐标和列坐标的数位之和大于k的格子**，即这道题是针对矩阵坐标而非矩阵中的值。
+2) 采用回溯法解决。
+- 机器人有回退行为
+如果k=1,机器人能到达的格子为(0,0)-->(0,1)和(0,0)-->(1,0)两种方式。
+也就是说当机器人走到(0,1)时可以回退到(0,0)再继续找到(1,0)。
+- 机器人无回退行为
+同上，只能找到一条路径能到达的格子为(0,0)-->(0,1)或(0,0)-->(1,0)
+*/
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+
+class Solution{
+  public:
+    int add_row_col(int loc)
+    {
+        int tt = 0;
+        while(loc>0)
+        {
+            tt += loc%10;
+            loc /= 10;
+        }
+        return tt;
+    }
+    //-------------------------一维数组存储二维数据
+    int movingCountCore(int threshold,int row,int col,int rows,int cols,int *visited)
+    {
+        int a[4];
+        int result = 0;
+        memset(a,0,4*sizeof(int));
+        if(visited[row*cols+col]==0 && add_row_col(row) + add_row_col(col) <= threshold)
+        {
+            visited[row*cols + col] = 1;
+            
+            //向上找
+            if(row>0 )
+            {
+                a[0] = movingCountCore(threshold,row-1,col,rows,cols,visited);
+            }
+            //下
+            if(row < rows-1 )
+            {
+                a[1] = movingCountCore(threshold,row+1,col,rows,cols,visited);
+            }
+
+            //左
+
+            if(col > 0)
+            {
+                a[2] = movingCountCore(threshold,row,col-1,rows,cols,visited);
+            }
+            //右
+
+            if(col < cols-1)
+            {
+                a[3] = movingCountCore(threshold,row,col+1,rows,cols,visited);
+            }
+            //有回退行为
+            //result = 1+a[0]+a[1]+a[2]+a[3];
+			      //无回退行为
+			      for(int i=0;i<4;i++)
+			      {
+				        if(result < a[i])
+				        { 
+					          result = a[i];
+				         }
+			       }
+			       result +=1;
+            //cout << "result: " << result << endl;
+        }
+        else
+        {
+            result = 0;
+        }
+
+        cout << "result: " << result << endl;
+        return result;
+    }
+
+    int movingCount(int threshold,int rows,int cols)
+    {
+        if(threshold < 0 || rows <= 0 || cols <= 0 )
+        {
+            return 0;
+        }
+        int visited[rows*cols]; //标识路径是否已进入每个格子
+        memset(visited,0,sizeof(int)*rows*cols);
+        return movingCountCore(threshold,0,0,rows,cols,visited);
+    }
+};
+
+int main()
+{
+    Solution ss;
+    int threshold = 1;
+    int rows = 3;
+    int cols = 3;
+    //int sumNum;
+    //sumNum = ss.movingCount(threshold,rows,cols);
+    cout << "该机器人能够到达:" << ss.movingCount(threshold,rows,cols)<< " 个格子" << endl;
+}
+//--------------------------二维数组存储二维数组
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+#define rows 4
+#define cols 4
+#define threshold 2
+
+class Solution{
+  public:
+    int add_row_col(int loc)
+    {
+        int tt = 0;
+        while(loc>0)
+        {
+            tt += loc%10;
+            loc /= 10;
+        }
+        return tt;
+    }
+    
+    int movingCountCore(int row,int col,int visited[][cols])
+    {
+        int a[4];
+        int result = 0;
+        memset(a,0,4*sizeof(int));
+        if(visited[row][col]==0 && add_row_col(row) + add_row_col(col) <= threshold)
+        {
+            visited[row][col] = 1;
+            
+            //向上找
+            if(row>0 )
+            {
+                a[0] = movingCountCore(row-1,col,visited);
+            }
+            //下
+            if(row < rows-1 )
+            {
+                a[1] = movingCountCore(row+1,col,visited);
+            }
+
+            //左
+
+            if(col > 0)
+            {
+                a[2] = movingCountCore(row,col-1,visited);
+            }
+            //右
+
+            if(col < cols-1)
+            {
+                a[3] = movingCountCore(row,col+1,visited);
+            }
+            //有回退行为
+            //result = 1+a[0]+a[1]+a[2]+a[3];
+            //无回退行为
+			      for(int i=0;i<4;i++)
+			      {
+				        if(result < a[i])
+				        {
+					          result = a[i];
+				          }
+			       }
+			       result +=1;
+          }
+          else
+          {
+            result = 0;
+          }
+
+        //cout << "result: " << result << endl;
+        return result;
+    }
+
+    int movingCount()
+    {
+        if(threshold < 0 || rows <= 0 || cols <= 0 )
+        {
+            return 0;
+        }
+        int visited[rows][cols]; //标识路径是否已进入每个格子
+        memset(visited,0,sizeof(int)*rows*cols);
+        return movingCountCore(0,0,visited);
+    }
+};
+
+int main()
+{
+    Solution ss;
+    cout << "该机器人能够到达:" << ss.movingCount()<< " 个格子" << endl;
+}
