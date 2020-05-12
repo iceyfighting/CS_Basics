@@ -1,0 +1,103 @@
+/*
+##题目
+请实现一个函数用来匹配‘.’和‘*’的正则表达式。模式中的字符‘.’表示任意一个字符，
+而‘*’表示它前面的字符可以出现任意次(含0次)。在本题中，匹配是指字符串的所有字符匹配整个模式。
+例如，字符串“aaa”与模式“a.a”和“ab*ac*a”匹配，但与“aa.a”和“ab*a”均不匹配。
+##解题思路
+这道题考虑情况比较多，相对而言比较麻烦。
+1) 怎么算是成功匹配呢?当字符串走到末尾‘\0’的时候，恰巧模式pattern也走到‘\0’，此时可以输出true
+2) 相对来说，如果字符串没有到末尾，但是pattern到末尾了，则不匹配，会返回false。
+3) 如果第一个字符匹配正确(第一种情况str的第一个字符和pattern的第一个字符相同，第二种情况pattern的第一个字符为‘.’)，
+此时判断第i个字符是否为“*”。
+4) 第i个字符不为“*”时，分两种情况，若第i+1字符为“*”则可以忽略第i和第i+1个字符。如果第i+1个字符也不为“*”则返回false
+5) 第i个字符为“*”时。分两种情况:第一种情况第i+2个字符不为“*”,如b*abc，则下一步可以走到i-1或者i+1。
+第二种情况:第i+2个字符为“*”，如b*a*bc,则下一步可以走到i-1或i+1或i+2
+*/
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+
+class Solution{
+  public:
+    
+    bool matchCore(char* str,char* pattern,int s,int p)
+    {
+        //str和pattern已经都到末尾，相互匹配
+        if(str[s] == '\0' && pattern[p] == '\0')
+        {
+            return true;
+        }
+        //str没有到末尾，但是pattern到末尾了，则不匹配，返回false
+        if(str[s] != '\0' && pattern[p] == '\0')
+        {
+            return false;
+        }
+        //当前元素匹配正确，递归进入下一个元素进行比较
+        //‘.'表示匹配任意字符
+        if(str[s] == pattern[p] || (str[s] != '\0' && pattern[p] == '.'))
+        {
+            return matchCore(str,pattern,s+1,p+1);
+        }
+        else
+        {
+            if(pattern[p] == '*')
+            {
+                //分为两种情况:比如:ab*b*a。若当前指针在第一个*那里，分三种情况
+                //1，向左走一步，考虑此*之前的元素可能出现多次
+                //2，向右走一步，考虑此*之前的元素不再出现，直接比较下一个元素，即认为第二个b*中的b有可能出现一次或多次
+                //3，向右走两步，忽略第二个b*，即考虑第二个b*不出现的情况
+                if(pattern[p+2] == '*')
+                {
+                    return matchCore(str,pattern,s,p-1)|| matchCore(str,pattern,s,p+1) || matchCore(str,pattern,s,p+2);
+
+                }
+                else
+                {
+                    //比如pattern为ab*a，当前指针在*位置。分两种情况，向左走一步(认为此*之前元素出现多次)
+                    //向右走一步(认为*之前元素不再出现，直接比较下一个元素)
+                    return matchCore(str,pattern,s,p-1) || matchCore(str,pattern,s,p+1);
+                }
+            }
+            else
+            {   //当前位置不是*但后面是*
+                //首先当前位置不是*即证明当前位置和str中相应元素不匹配，而当前元素下一位为*
+                //即证明当前位置出现0或多次。只有出现0次才有可能匹配成功过。因此当前位置和后面的*需要忽略，进入下一轮直接比较*之后的元素。
+                if(pattern[p+1] == '*')
+                {
+                    return matchCore(str,pattern,s,p+2);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    bool match(char* str,char* pattern)
+    {
+        if(str == NULL || pattern == NULL )
+        {
+            return false;
+        }
+        return matchCore(str,pattern,0,0);
+    }
+};
+
+int main()
+{
+    Solution ss;
+    char str[] = "bbbba";
+    char pattern[] = ".*a*a";
+    int flag = ss.match(str,pattern);
+    if(flag)
+    {
+        cout << "字符串和模式匹配"<<endl;
+    }
+    else
+    {
+        cout << "字符串和模式不匹配" << endl;
+    }
+}
