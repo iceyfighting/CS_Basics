@@ -1,0 +1,62 @@
+/*
+##题目
+定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的min函数。
+在该栈中，调用min、push及pop的时间复杂度都是O(1)。
+##解题思路
+1) 定义两个栈，一个用来存放数据stack1，一个作为辅助栈stack2存在每次新加入数据时，保持辅助栈中的栈顶是最小值。
+2) 在push()函数中进行压栈操作，每个进入stack1的数据data，都和stack2的栈顶元素进行比较，
+若data<stack2.top()，则同时向stack1和stack2压入数据。若data>stack2.top()则向stack2中压入stack2.top()。
+这样就可以让辅助栈stack2的栈顶保持最小元素。
+*/
+#include<iostream>
+#include<stack>
+using namespace std;
+
+
+class Solution{
+  private:
+    stack<int> stack1;
+    stack<int> stack2;
+  public:
+    void push(int value)
+    {
+        stack1.push(value);//数据栈加入一个元素
+        //判断辅助栈是否为空，新加入元素是否小于辅助栈栈顶元素
+        if(stack2.empty() || value < stack2.top())
+        {
+            stack2.push(value);//小的话，加入辅助栈
+        }
+        else
+        {   //大的话，辅助栈中加入一个自己的栈顶元素，保持最小元素在栈顶
+            stack2.push(stack2.top());
+        }
+    }
+
+    void pop()
+    {
+        if(!stack1.empty())
+        {
+            stack1.pop();
+            stack2.pop();
+        }
+    }
+    int top()
+    {
+        return stack1.top();;
+    }
+    int min()
+    {
+        return stack2.top();
+    }
+};
+
+int main()
+{
+    Solution ss;
+    ss.push(2);
+    ss.push(-5);
+    ss.push(9);
+    ss.push(3);
+    ss.push(6);
+    cout << ss.min() << endl;
+}
