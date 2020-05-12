@@ -1,0 +1,78 @@
+/*
+##题目
+输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序，假设压入栈的所有数字均不相等。
+例如，序列{1,2,3,4,5}是某栈的压栈序列，序列{4,5,3,2,1}是该压栈序列对应一个弹出序列，
+但{4,3,5,1,2}就不可能是该压栈序列的弹出序列。
+##解题思路
+1) 输入两个整数序列，那么我们用两个vector容器存放这两个整数序列。
+定义两个vector容器popV={4,3,5,1,2}和pushV={1,2,3,4,5}。
+2) 定义一个辅助栈sk.把输入的第一个序列pushV中的数字依次压入辅助栈sk中。
+压入过程中注意压入元素sk.top()和popV顶部的元素是否相等，
+如果sk.top()和popV 顶部元素相等，则删除sk.top().
+如果sk.top()和popV 顶部元素不相等，则继续把第一个序列pushV中的数字压入sk栈中,
+直到找到sk.pop()和popV栈顶元素相同，并把sk.top()删除。然后继续找popV中接下来的元素是否和sk.pop()相同。
+3) 如果(2)的过程结束时，sk辅助栈为空，说明第二个序列是第一个序列的弹出顺序。否则不是。
+
+*/
+
+#include<iostream>
+#include<vector>
+#include<stack>
+using namespace std;
+
+
+class Solution{
+    public:
+        bool isPoporder(vector<int> pushV,vector<int> popV)
+        {
+            int push_length = pushV.size();
+            int pop_length  = popV.size();
+
+            if(push_length == 0 || pop_length == 0)
+            {
+                return false;
+            }
+            stack<int> sk;
+            int j = 0;
+
+            for(int i = 0;i<push_length;i++)
+            {
+                cout << "pushV:" << pushV[i] << " i:" << i <<endl;
+                sk.push(pushV[i]);
+                while(j < pop_length && sk.top() == popV[j])
+                {
+                    sk.pop();
+                    j++;
+                }
+            }
+            return sk.empty();
+        }
+};
+
+int main()
+{
+    Solution ss;
+    vector<int> pushV;
+    vector<int> popV;
+
+    pushV.push_back(1);
+    pushV.push_back(2);
+    pushV.push_back(3);
+    pushV.push_back(4);
+    pushV.push_back(5);
+
+    popV.push_back(4);
+    popV.push_back(3);
+    popV.push_back(5);
+    popV.push_back(1);
+    popV.push_back(2);
+    bool flag =  ss.isPoporder(pushV,popV);
+    if(flag)
+    {
+        cout << "第二个序列是该栈的弹出顺序" << endl;
+    }
+    else
+    {
+        cout << "第二个序列不是该栈的弹出顺序" <<endl;
+    }
+}
