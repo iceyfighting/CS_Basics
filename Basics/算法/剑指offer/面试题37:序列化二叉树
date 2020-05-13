@@ -1,0 +1,108 @@
+/*
+##题目
+实现两个函数，分别用来序列化和反序列化二叉树
+##解题思路
+1) 序列化
+根据前序遍历的顺序序列化二叉树，从根节点开始，在遍历二叉树碰到指针为NuLL时，
+把NULL指针序列化为一个特殊的字符(如‘$’)。
+另外，节点的数值之间要用一个特殊字符(如‘,’)隔开。
+2) 反序列化
+以字符串**1,2,4,$,$,$,3,5,$,$,6,$,$**为例分析如何反序列化二叉树。
+前序遍历从根节点开始，第一个读出的是1，就是根节点的值。
+接下来读出的数字是2，根据前序遍历的规则，2是根节点的左子节点的值。
+同样 ，4是值为2的节点的左子节点。接着从序列化字符串中读出两个字符‘$’，
+表明值为4的节点的左、右节点均为NuLL指针，因此是叶节点。
+以此类推构建一棵树的过程。
+*/
+
+#include<iostream>
+#include<stdlib.h>
+#include<vector>
+using namespace std;
+
+struct BinaryTreeNode{
+    char             val;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+};
+
+
+class Solution{
+    public:
+    
+    BinaryTreeNode* DeserializeCore(char str[],int *length)
+    {
+        if(str[(*length)] == '$')
+        {
+            (*length)++;
+            return NULL;
+        }
+        else
+        {
+            BinaryTreeNode *temp = new BinaryTreeNode();
+            temp->val = str[(*length)];
+            temp->left = temp->right = NULL;
+            (*length)++;
+            temp->left = DeserializeCore(str,length);
+            temp->right= DeserializeCore(str,length);
+            return temp;
+        }
+    }
+
+    BinaryTreeNode* CreateBinaryTree()
+    {
+        char tt[20] = {'1','2','4','$','$','$','3','5','$','$','6','$','$'};
+        int length = 0;
+        BinaryTreeNode* root;
+        root = DeserializeCore(tt,&length);
+        return root;
+    }
+    void SerializeCore(BinaryTreeNode *root,char result[],int *length)
+    {
+        if(root == NULL)
+        {
+            result[*length] = '$';
+            (*length)++;
+        }
+        else
+        {
+            result[(*length)] = root->val;
+            (*length)++;
+            SerializeCore(root->left,result,length);
+            SerializeCore(root->right,result,length);
+        }
+    }
+
+    char* Serialize(BinaryTreeNode *root)
+    {
+        int length = 0;
+        static char result[100];
+        SerializeCore(root,result,&length);
+        result[length] = '\0';
+        return result;
+    }
+
+    void print_Tree_preOrder(BinaryTreeNode* root)
+    {
+        if(root)
+        {
+            cout << root->val << " ";
+            print_Tree_preOrder(root->left);
+            print_Tree_preOrder(root->right);
+        }
+    }
+};
+
+int main()
+{
+    BinaryTreeNode *root = NULL;    
+    Solution ss;
+    //创建二叉树
+    root = ss.CreateBinaryTree();
+    //先序遍历打印二叉树
+    ss.print_Tree_preOrder(root);
+    cout << endl;
+
+    char* str = ss.Serialize(root);
+    cout << str << endl;
+}
