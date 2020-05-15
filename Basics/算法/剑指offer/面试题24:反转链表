@@ -3,71 +3,86 @@
 */
 
 #include<iostream>
-   using namespace std;
-   
-   struct ListNode{
-        int val;
-        struct ListNode *next;
-        ListNode(int x):
-                val(x),next(NULL){}
-   };
-  
-  class Solution{
-          public:
-                  ListNode* create(){
-                         ListNode *p,*head,*tail;
-                         head = tail = NULL;
-  
-                         for(int i = 0;i<7;i++){
-                             p = new ListNode(i);
-  
-                             if(!head){
-                                head = p;
-                            }
-                             else{
-                               tail->next = p;
-                             }
-                             tail = p;
-                         }
-                         return head;
-                  }
-  
-                  void print_Node(ListNode *head){
-                       while(head){
-                            cout<<head->val<<" ";
-                            head = head->next;
-                       }
-                       cout<<endl;
-                 }
-  
-                  ListNode* ReverseList(ListNode* pHead){
-                      ListNode *left = NULL;
-                     ListNode *center = NULL;
-                      ListNode *right = NULL;
-  
-                     if(!pHead){
-                          return NULL;
-                      }
-  
-                      center = pHead;
-                      while(center){//节点不为空
-                          right = center->next;//节点往右移动
-                          //center->next = left;//
-                          left = center;
-                          center = right;
-                      }
-                      return left;
-  
-                  }
-  };
-  
-  int main(){
-     Solution ss;
-     ListNode *head = NULL;
-      head = ss.create();
-      ss.print_Node(head);
-      head = ss.ReverseList(head);
-      cout<<head->val<<endl;
-      //ss.print_Node(head);
-  }
+using namespace std;
+
+struct ListNode{
+  int val;
+  ListNode *next;
+};
+
+class Solution{
+  public:
+    ListNode* createNode(ListNode *head,int a[],int len)
+    {
+        ListNode* tail = NULL;
+        ListNode* loop  = NULL;
+        for(int i = 0;i<len;i++)
+        {
+            ListNode *p = new ListNode;
+            p->val = a[i];
+            p->next = NULL;
+            
+            if(head == NULL)
+            {
+                head = p;
+            }
+            else
+            {
+                tail->next = p;
+            }
+            tail = p;
+        }
+        return head;
+    }
+
+    void Output(ListNode *head)
+    {
+        if(head == NULL )
+        {
+            cout << "链表为空" << endl;
+        }
+        while(head != NULL)
+        {
+            cout << head->val << " ";
+            head = head->next;
+        }
+    }
+    
+    ListNode* reverseList(ListNode *head)
+    {
+        ListNode *left = NULL;
+        ListNode *right= NULL;
+        ListNode *center = NULL;
+        if(head == NULL)
+        {
+            return NULL;
+        }
+
+        center = head;
+        while(center)
+        {
+            right = center->next;
+            center->next = left;
+            left  = center;
+            center= right;
+
+        }
+        return left;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    ListNode *head;
+    head = NULL;
+    int a[] = {1,3,5,6,7};
+    head = ss.createNode(head,a,5);
+    ss.Output(head);
+    cout << endl;
+    head = ss.reverseList(head);
+    ss.Output(head);
+    cout << endl;
+}
+
 
