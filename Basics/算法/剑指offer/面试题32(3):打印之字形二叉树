@@ -67,24 +67,29 @@
                 cout << pNode->val << " " ;
                 if(current == 1)
                 {
-                    if(pNode->right)
-                    {
-                        st[next].push(pNode->right);
-                    }
                     if(pNode->left)
                     {
-                        st[next].push(pNode->left);
+                        //cout << pNode->right->val << endl;
+                        sk[next].push(pNode->left);
+                
+                    }
+                    if(pNode->right)
+                    {
+                        sk[next].push(pNode->right);
+                
                     }
                 }
                 else
                 {
-                    if(pNode->left)
-                    {
-                        st[next].push(pNode->left);
-                    }
                     if(pNode->right)
                     {
-                        st[next].push(pNode->right);
+                        sk[next].push(pNode->right);
+                
+                    }
+                    if(pNode->left)
+                    {
+                        sk[next].push(pNode->left);
+                    
                     }
                 }
                 if(st[current].empty())
