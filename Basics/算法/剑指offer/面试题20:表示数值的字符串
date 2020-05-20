@@ -21,81 +21,87 @@ using namespace std;
 
 
 class Solution{
-  public:
+ public:
     
-    bool stringOfnum(char* string)
+    bool stringTonum(char *str)
     {
+        if(str == NULL)
+        {
+            return false;
+        }
+        
         bool isNumber = true;
-        int string_len = strlen(string);
-        int dot = 0;//小数点只能出现一次，且在e之前出现
-        int E_or_e = 0;//E或e也只能出现一次
-        bool is_e_or_E = false;//是否出现e或E
+        int stringLen = strlen(str);
+        int dot = 0;//小数点出现
+        int E_or_e = 0;
+        bool is_E_or_e = false;//是否出现E/e
 
-        for(int i = 0; i < string_len ; i++)
-        {   // +和-只能出现在字符串开头或e的后面
-            if(string[i] == '+' || string[i] == '-')
+        for(int i = 0;i<stringLen;i++)
+        {
+            if(str[i] == '+' || str[i] == '-')
             {
-                if(i == 0) //若出现在字符串开头
+                if(i == 0) //加号和减号放在开头
                 {
+
                 }
-                else //出现在e后面
-                {   // 出现在末尾
-                    if(string[i-1] == 'e' || string[i-1] == 'E')
+                else 
+                {
+                    if(str[i-1] == 'E' || str[i-1] == 'e')
                     {
-                        if(i == string_len - 1)
+                        if(i == stringLen-1)
                         {
                             isNumber = false;
                             break;
                         }
                     }
-                    else //出现在中间就返回false，
+                    else
                     {
                         isNumber = false;
                         break;
                     }
                 }
             }
-            else if(string[i] == '.')
+            else if(str[i] == '.')
             {
+                if(i == 0)
+                {
+                    
+                }
+                else if(i == stringLen-1)
+                {
+                    isNumber = false;
+                    break;
+                }
                 dot++;
-                //若出现在开头或末尾
-                if(i == 0 || i == string_len - 1)
+                if(dot>1)
                 {
                     isNumber = false;
                     break;
                 }
-                //若出现多次
-                if(dot > 1)
-                {
-                    isNumber = false;
-                    break;
-                }
-                //在e或E之后出现则报错
-                if(is_e_or_E)
+                if(is_E_or_e)
                 {
                     isNumber = false;
                     break;
                 }
             }
-            else if(string[i] == 'e' || string[i] == 'E')
+            else if(str[i] == 'E' || str[i] == 'e')
             {
-                is_e_or_E = true;//出现e或E
-                E_or_e++; //e或E出现的次数
+                is_E_or_e = true;
+                E_or_e++;
                 if(E_or_e > 1)
                 {
                     isNumber = false;
                     break;
                 }
-                if(i == 0 || i == string_len -1)
+                if(i == stringLen-1)
                 {
                     isNumber = false;
                     break;
                 }
-
             }
             else
             {
-                if(string[i] >= '0' && string[i] <= '9')
+                if(str[i] >='1' && str[i] <= '9')
                 {
 
                 }
