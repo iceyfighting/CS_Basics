@@ -4,8 +4,7 @@
 
 pthread_t ThreadPool::producer;
 pthread_t *ThreadPool::consumer;
-pthread_mutex_t ThreadPool::producer_lock = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t ThreadPool::consumer_lock = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t ThreadPool::lock = PTHREAD_MUTEX_INITIALIZER;
 queue<string> ThreadPool::MessageQueue ;
 int ThreadPool::thread_count = 0;
 bool ThreadPool::shutdown = false;
@@ -50,13 +49,9 @@ int ThreadPool::threadpool_create(int _thread_count)
 // 往线程池中添加任务
 void ThreadPool::threadpool_add(string _str)
 {    
-    cout << "测试2..." << endl;
-    //这个锁是不是和消费者的锁冲突了？
-    pthread_mutex_lock(&producer_lock);
-    
-    cout << "测试2..." << endl;
+    pthread_mutex_lock(lock);
     MessageQueue.push(_str);
-    pthread_mutex_unlock(&producer_lock);
+    pthread_mutex_unlock(lock);
 }
 
 void *ThreadPool::threadpool_consumer(void *args)
@@ -64,7 +59,7 @@ void *ThreadPool::threadpool_consumer(void *args)
     cout << " 消费者开始执行 " << endl;
     while(true)
     {
-        pthread_mutex_lock(&consumer_lock);
+        pthread_mutex_lock(&lock);
         if(MessageQueue.size() != 0)
         {
             string str = MessageQueue.front();
@@ -78,11 +73,11 @@ void *ThreadPool::threadpool_consumer(void *args)
         }
         else // 为空，但是生产者还没结束，消息队列里面以后可能还有数据
         {
-            usleep(300000); // 300ms
+            usleep(300); // 300us
         }
-        pthread_mutex_unlock(&consumer_lock);        
+        pthread_mutex_unlock(&lock);        
     }
-    pthread_mutex_unlock(&consumer_lock);        
+    pthread_mutex_unlock(&lock);        
 }
 
 void *ThreadPool::threadpool_producer(void *args)
@@ -94,12 +89,8 @@ void *ThreadPool::threadpool_producer(void *args)
     while(getline(ifs, line))
     {
         ++line_of_count;
-        
-        cout << "测试....." << endl;
         //因为生产者只有一个，不用加锁
         ThreadPool::threadpool_add(line);
-
-        cout << "测试....." << endl;
     }
     // 线程池关闭
     shutdown = true;

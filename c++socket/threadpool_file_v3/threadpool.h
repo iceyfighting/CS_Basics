@@ -13,8 +13,7 @@ class ThreadPool{
     public:
         static pthread_t producer;          // 生产者线程
         static pthread_t *consumer;         // 用于创建消费者线程个数
-        static pthread_mutex_t producer_lock;// 生产者互斥锁，线程互斥
-        static pthread_mutex_t consumer_lock;// 消费者互斥锁，线程互斥
+        static pthread_mutex_t lock;        // 互斥锁，线程互斥
         static int thread_count;            // 线程数目
         static bool shutdown;                // 是否关闭，默认 false 不关闭
         static int line_of_count;           // 文件行数
