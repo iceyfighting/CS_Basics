@@ -1,0 +1,140 @@
+/*
+##题目
+输入两颗二叉树A和B，判断B是不是A的子结构。
+##解题思路
+1) 在树A中找出和树B的根节点的值一样的节点R
+2) 判断树A中以R为根节点的子树是不是包含和树B一样的结构
+*/
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+struct BinaryTreeNode{
+    double             val;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+};
+
+vector<BinaryTreeNode *> nodeArray;
+int Array_BinaryTree[] = {8,8,9,0,0,2,4,0,0,7,0,0,7,0,0};
+int Array_SubTree[] = {8,9,0,0,2,0,0};
+int index_1 = 0;
+int index_2 = 0;
+class Solution{
+    public:
+        
+        BinaryTreeNode*  CreateBinaryTree2(BinaryTreeNode *tree)
+        {
+            double num = Array_SubTree[index_2++];
+            //cout << index_1 <<endl;//无递归结束的标志
+            if(num == 0)
+            {
+                tree = NULL;
+            }
+            else
+            {
+                tree = new BinaryTreeNode;
+                tree->val = num;
+                tree->left = CreateBinaryTree2(tree->left);
+                tree->right= CreateBinaryTree2(tree->right);
+            }
+            return tree;
+        }
+        BinaryTreeNode*  CreateBinaryTree1(BinaryTreeNode *tree)
+        {
+            double num = Array_BinaryTree[index_1++];
+            //cout << index_1 <<endl;//无递归结束的标志
+            if(num == 0)
+            {
+                tree = NULL;
+            }
+            else
+            {
+                tree = new BinaryTreeNode;
+                tree->val = num;
+                tree->left = CreateBinaryTree1(tree->left);
+                tree->right= CreateBinaryTree1(tree->right);
+            }
+            return tree;
+        }
+
+        void print_Tree_preOrder(BinaryTreeNode *tree)
+        {
+            if(tree)
+            {
+                cout << tree->val << " ";
+                print_Tree_preOrder(tree->left);
+                print_Tree_preOrder(tree->right);
+            }
+        }
+       
+        bool Equal(double a,double b)
+        {
+            if((a-b > -0.000001) && (a-b < 0.000001))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        bool DoesTree1HaveTree2(BinaryTreeNode* root1,BinaryTreeNode* root2)
+        {
+            if(root2 == NULL) return true;
+            if(root1 == NULL) return false;
+            if(!Equal(root1->val,root2->val))
+            {
+                return false;
+            }
+            return DoesTree1HaveTree2(root1->left,root2->left) && DoesTree1HaveTree2(root1->right,root2->right);
+        }
+        
+        bool hasSubtree(BinaryTreeNode *root1,BinaryTreeNode *root2)
+        {
+            bool result = false;
+            if(root1!= NULL && root2 != NULL)
+            {
+                //A树中节点值和B树中节点值相同
+                if(Equal(root1->val,root2->val))
+                {
+                    result = DoesTree1HaveTree2(root1,root2);
+                }
+                if(!result)
+                {
+                    result = hasSubtree(root1->left,root2);
+                }
+                if(!result)
+                {
+                    result = hasSubtree(root1->right,root2);
+                }
+            }
+            return result;
+        }
+};
+
+int main()
+{
+    BinaryTreeNode *tree1 = NULL;
+    BinaryTreeNode *tree2 = NULL;
+    Solution ss;
+    //创建二叉树
+    tree1 = ss.CreateBinaryTree1(tree1);
+    tree2 = ss.CreateBinaryTree2(tree2);
+    //先序遍历打印二叉树
+    ss.print_Tree_preOrder(tree1);
+    cout << endl;
+
+    ss.print_Tree_preOrder(tree2);
+    cout << endl;
+    bool flag = ss.hasSubtree(tree1,tree2);
+    if(flag)
+    {
+        cout << "树B是树A的子树" << endl;
+    }
+    else
+    {
+        cout << "树B不是树A的子树" << endl;
+    }
+}

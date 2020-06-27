@@ -1,0 +1,51 @@
+#include<iostream>
+using namespace std;
+
+class Solution{
+  public:
+    
+    int findNumsappearonce(int a[],int length)
+    {
+        if(a == NULL || length < 2)
+        {
+            return 0;
+        }
+
+        int bitSum[32];
+        for(int i = 0;i < 32; ++i)
+        {
+            bitSum[i] = 0;
+        }
+        
+        for(int i = 0; i < length;++i)
+        {
+            int result = 1;
+            for(int j = 31;j>=0;j--)
+            {
+                int bit = a[i] & result;
+                if(bit != 0)
+                {
+                    bitSum[j] += 1;
+                    cout << " bitSum[j]:" << bitSum[j] << " j:" << j ;
+                }
+                result = result << 1;
+            }
+            cout << endl;
+        }
+        int result = 0;
+        for(int i = 0;i<32;i++)
+        {
+            result = result << 1;
+            result = result + bitSum[i]%3;
+        }
+        return result;
+    }
+};
+
+int main()
+{
+    int a[] = {3,3,99,5,3,5,5};
+    int len = 7;
+    Solution ss;
+    cout << "出现一次的数字: " << ss.findNumsappearonce(a,len) << endl;
+}

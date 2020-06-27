@@ -1,0 +1,99 @@
+/*
+请实现一个函数，输入一个整数，输出该树二进制表示中1的个数。
+例如:把9表示成二进制是1001，有2位是1.因此如果输入9，则该函数输出2.
+##解题思路
+1) 先判断整数二进制表示的最右边一位是不是1，接着把输入的整数右移一位，再次判断知道整个整数变成0为止。
+  让一个整数与1做与运算结果为1则整数最右边一位为1，否则为0.
+2) (1)方法的弊端是当整数为负数时容易陷入死循环。
+  可以不右移输入的数字n。首先把n和1做与运算，判断n的最低位是不是1，接着把**1**左移得到2，
+  再和n做与运算.....这样反复左移，每次都可判断n的其中一位是不是1
+3) (2)方法的弊端是整数有几位就要移动几次，还有一种更快的方式整数中有几位为1就移动几次。
+  首先把整数减去1，再和原整数做与运算，会把该整数最右边的1变成0.那么一个整数的二进制表示中有多少个1，
+  就可以进行多少次这种操作
+*/
+#include<iostream>
+using namespace std;
+
+class Solution{
+  public:
+        int numOf1_1(int n)
+        {
+            int count = 0;
+            while(n)
+            {
+                if(n & 1)
+                {
+                    count++;
+                    n = n >> 1;
+                }
+            }
+            return count;
+        }
+
+        int numOf1_2(int n)
+        {
+            int count = 0;
+            int flag  = 1;
+            while(flag)
+            {
+                if(n & flag)
+                {
+                    count++;
+                    flag = flag << 1;
+                }
+            }
+            return count;
+        }
+
+        int numOf1_3(int n)
+        {
+            int count = 0;
+            while(n)
+            {
+                if(n)
+                {
+                    count++;
+                    n = (n-1)&n;
+                }
+            }
+            return count;
+        }
+
+        int numOf2(int n)
+        {
+            return (n-1)&n;
+            
+        }
+
+        int numMtoN(int m,int n)
+        {
+            int sum = m^n;
+            int count = 0;
+            while(sum)
+            {
+                if(sum)
+                {
+                    count++;
+                    sum = (sum-1)&sum;
+                }
+            }
+            return count;
+        }
+    
+};
+
+int main()
+{
+    Solution ss;
+    cout << "二进制中1的个数: " << ss.numOf1_3(6) << endl;
+    int flag = ss.numOf2(5);
+    if(flag == 0)
+    {
+        cout << "该整数是2的整数次方" << endl;
+    }
+    else
+    {
+        cout << "该整数不是2的整数次方" << endl;
+    }
+    cout << "需要改变m的二进制表示中的:" << ss.numMtoN(10,13) << "位才能得到n" << endl;
+}

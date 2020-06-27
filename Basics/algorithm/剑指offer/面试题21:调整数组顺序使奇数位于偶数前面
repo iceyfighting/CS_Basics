@@ -1,0 +1,62 @@
+/*
+##题目
+输入一个整数数组，实现一个函数来调整该数组中数字的顺序，
+使得所有奇数位于数组的前半部分，所有偶数位于数组的后半部分。
+##解题思路
+定义两个指针start和end，分别指向数组的首元素和尾元素。
+在两个指针相遇之前，判断这两个指针对应的数值是偶数还是奇数，若start对应的数值为偶数，
+且end对应的数值是奇数，则交换这两个数字。
+*/
+
+#include<iostream>
+#include<cstring>
+#include<string.h>
+using namespace std;
+
+
+class Solution{
+  public:
+   
+    void reorderOddEven_1(int *a,int length)
+    {
+        if(a == NULL || length == 0)
+        {
+            return;
+        }
+        int *start = a;
+        int *end   = a + length - 1;
+        //int temp  = 0;
+        while(start<end)
+        {
+            while(start < end && (*start & 0x1) != 0)
+            {
+                start++;
+            }
+            while(start < end && (*end & 0x1) == 0)
+            {
+                end--;
+            }
+            
+            if(start < end)
+            {
+                int temp  = *start;
+                *start    = *end;
+                *end      = temp;
+            }
+        }
+
+    }
+};
+
+int main()
+{
+    Solution ss;
+    int a[] = {1,2,3,4,5};
+    int length = 5;
+    ss.reorderOddEven_1(a,length);
+    for(int i = 0;i<length;i++)
+    {
+        cout << a[i] << " " ;
+    }
+    cout << endl;
+}

@@ -1,0 +1,76 @@
+/*
+为了实现只遍历链表一次就能找到倒数第k节点，定义两个指针。
+第一个指针从链表头指针开始遍历向前走k-1步，即到达第k个节点。
+此时第二个指针开始从链表的头指针开始遍历，这两个指针之间保持k-1个节点的距离。
+所以很容易想到若第一个指针到达链表的尾节点时，第二个指针正好指向倒数第k个节点(因为这两个指针刚好差k-1个节点的距离)
+*/
+
+#include<iostream>
+using namespace std;
+
+struct ListNode{
+        int val;
+        struct ListNode *next;
+        ListNode(int x) :val(x),next(NULL){}
+   }
+
+class Solution
+{
+  public:
+    ListNode* create(){
+                       ListNode *p,*head,*tail;
+                      head = tail = NULL;
+                       for(int i =0;i<7;i++){
+                          p = new ListNode(i);
+                          if(!head){
+                              head = p;
+                          }
+                          else{
+                            tail->next = p;
+                          }
+                          tail = p;
+                       }
+                       return head;
+                  }
+    void print_Node(ListNode *head){
+                     while(head){
+                        cout<<head->val<<" ";
+                        head = head->next;
+                     }
+                     cout<<endl;
+                }
+      ListNode* FindKthToTail(ListNode* pListHead,unsigned int k){
+                         ListNode *qian = pListHead;
+                         ListNode *hou = pListHead;
+                         //如果链表为空或要求返回k=0的点，则返回NULL
+                          if(!pListHead || !k){
+                              return NULL;
+                          }
+                          // 往前走k-1步，如果链表长度小于k则返回NULL
+                          for(int i =0;i<k-1;i++){
+                             if(qian->next){
+                               qian = qian->next;
+                             }
+                             else{
+                                return NULL;
+                             }
+                          }
+                          while(qian->next){
+                                qian = qian->next;
+                                hou = hou->next;
+                          }
+                          return hou;
+                }
+};
+
+int main(){
+      Solution ss;
+       ListNode *head = NULL;
+       ListNode *kth = NULL;
+ 
+      head = ss.create();
+       ss.print_Node(head);
+      kth = ss.FindKthToTail(head,3);
+       cout<<kth->val<<endl;
+      return 0;
+ }

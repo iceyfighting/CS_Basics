@@ -1,0 +1,159 @@
+#include<iostream>
+using namespace std;
+
+bool g_bInputInvalid = false;
+
+#define MAXSIZE 1000
+typedef struct 
+{
+    int a[MAXSIZE+1];
+    int length;
+}SqList;
+
+class Solution
+{
+    public:
+        int Partition(SqList *S,int left,int right,int length)
+        {
+            
+            int povitkey = S->a[left];
+            S->a[0] = povitkey;
+            while(left<right)
+            {
+                while(left < right && S->a[left]<=povitkey)
+                {
+                    left++;
+                }
+                S->a[left] = S->a[right];
+                while(left < right && S->a[right]>=povitkey)
+                {
+                    right--;
+                }
+                S->a[right] = S->a[left];
+            }
+            S->a[left] = povitkey;
+            return left;
+        }
+
+        //bool g_bInputInvalid = false;
+
+        bool CheckInvalidArray(SqList *S,int length)
+        {
+            g_bInputInvalid = false;
+            if(S == NULL || length < 0)
+            {
+                g_bInputInvalid = true;
+            }
+            return g_bInputInvalid;
+        }
+        
+        bool CheckMoreThanHalf(SqList *S,int length,int result)
+        {
+            int times = 0;
+            for(int i = 1;i<= length;i++)
+            {
+                if(S->a[i] == result)
+                {
+                    times++;
+                }
+            }
+            cout << times << endl; 
+            bool isMoreThanHalf = true;
+            if(times*2 <= length)
+            {
+                g_bInputInvalid = true;
+                isMoreThanHalf  = false;
+            }
+            return isMoreThanHalf;
+        }
+
+        int MoreThanHalfNum(SqList *S,int length)
+        {
+            if(CheckInvalidArray(S,length))
+            {
+                return 0;
+            }
+            int middle = length/2;
+            int start = 0;
+            int end = length-1;
+            int index = Partition(S,start,end,length);
+            cout << "index:" << index << endl;
+            while(index != middle)
+            {
+                if(index>middle)
+                {
+                    end = index-1;
+                    index = Partition(S,start,end,length);
+                }
+                else
+                {
+                    start = index+1;
+                    index = Partition(S,start,end,length);
+                }
+            }
+            int result = S->a[middle];
+            cout << result << endl;
+            if(!CheckMoreThanHalf(S,length,result))
+            {
+                result = 0;
+            }
+            return result;
+        }
+
+        int MoreThanHalfNum_2(SqList *S,int length)
+        {
+            
+            if(CheckInvalidArray(S,length))
+            {
+                return 0;
+            }
+            int numInArray = S->a[1];
+            cout<<"第一个元素:" <<numInArray<<endl;
+            int times = 1;
+            
+            for(int i = 2;i<=length;i++)
+            {
+                //numInArray = S->a[i];
+                
+                if(times == 0)
+                {
+                    numInArray = S->a[i];
+                    times = 1;
+                }
+                else if(numInArray == S->a[i])
+                {
+                    times++;
+                }
+                else
+                {
+                    times--;
+                }
+                cout<<"times:"<<times << " ,numInArray:"<<numInArray<<endl;
+            }
+
+            cout << numInArray<<endl;
+            if(!CheckMoreThanHalf(S,length,numInArray))
+            {
+                numInArray = 0;
+            }
+
+            return numInArray;
+
+        }
+};
+
+int main()
+{
+    Solution ss;
+    int a[] = {1,2,3,2,2,2,5,4,2};
+    SqList L;
+    int length = 9;
+    for(int i = 0;i<length;i++)
+    {
+        L.a[i+1] = a[i];
+    }
+    //int more_half = ss.MoreThanHalfNum(&L,length); 
+    
+    int more_half = ss.MoreThanHalfNum_2(&L,length); 
+    cout << "数组中出现次数超过一半的数字" << more_half << endl;
+}

@@ -1,0 +1,63 @@
+#include<iostream>
+using namespace std;
+
+class Solution{
+  public:
+    unsigned int FindFirstBitIs1(int num)
+    {
+        int indexBit = 0;
+        while(((num & 1) == 0) && (indexBit < 8*sizeof(int)))
+        {
+            num = num >> 1;
+            ++indexBit;
+        }
+        return indexBit;
+    }
+
+    bool IsBit1(int num,unsigned int indexBit)
+    {
+        num = num >> indexBit;
+        return (num & 1);
+    }
+    
+    void findNumsappearonce(int a[],int length,int *num1,int *num2)
+    {
+        if(a == NULL || length < 2)
+        {
+            return ;
+        }
+        int resultExclusiveOR = 0;
+        for(int i = 0;i < length; ++i)
+        {
+            resultExclusiveOR ^= a[i];
+
+        }
+        //cout << "resultExclusiveOR: " << resultExclusiveOR << endl;
+        int indexOf1 = FindFirstBitIs1(resultExclusiveOR);
+        //cout << "indexOf1: " << indexOf1 << endl;
+        *num1 = *num2 = 0;
+        for(int j = 0;j< length;++j)
+        {
+            if(IsBit1(a[j],indexOf1))
+            {
+                *num1 ^= a[j];
+                //cout << "num1: " << *num1 << endl;
+            }
+            else
+            {
+                *num2 ^= a[j];
+                //cout << "num2： " << *num2 << endl;
+            }
+        }
+    }
+};
+
+int main()
+{
+    int a[] = {2,3,4,6,3,2,5,5};
+    int len = 8;
+    int num1,num2;
+    Solution ss;
+    ss.findNumsappearonce(a,len,&num1,&num2);
+    cout << num1 << " " << num2 << endl;
+}

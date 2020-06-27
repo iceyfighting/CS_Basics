@@ -1,0 +1,80 @@
+/*
+##题目
+把一个数组最开始的若干个元素搬到数组的末尾，我们称为数组的旋转。
+输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。
+例如，数组 {3,4,5,1,2}为a ={1,2,3,4,5}的一个旋转，该数组的最小值为1.
+##解题思路
+1) 定义两个指针start和end分别指向数组的第一个元素和最后一个元素。
+2) 接下来找到数组中间的元素mid=(start+end)/2.
+3) 若a[mid]>a[start]，那么说明中间元素位于前面的递增子数组中。
+此时要想找最小元素，应往该中间元素的后面找，即让start=mid。
+4) 若a[mid]<a[end]，那么说明中间元素位于后面的递增子数组中。最小元素应该在该中间元素的前面，即end = mid。
+5) 按照以上思路，第一个指针总是指向前面递增数组的元素，并最终指向前面子数组的最后一个元素。
+第二个指针总是指向后面递增数组的元素，并最终指向后面子数组的第一个元素。也就是说它们最终会指向两个相邻元素，
+而第二个指针指向的刚好是最小的元素。这就是循环结束的条件。
+
+*/
+
+#include<iostream>
+using namespace std;
+
+class Solution{
+  public:
+    int minInorder(int *a,int start,int end)
+    {
+        int result = a[start];
+        for(int i = start+1;i<=end;++i)
+        {
+            if(result > a[i])
+            {
+                result = a[i];
+            }
+        }
+        return result;
+    }
+    
+    int Min(int *a,int length)
+    {
+        if(a == NULL || length < 0)
+        {
+            return 0;
+        }
+        int start = 0;
+        int end   = length-1;
+        int mid   = start;
+        while(a[start] >= a[end])
+        {   //中间元素大于首元素，位于第一个递增子数组
+            if(end - start == 1)
+            {
+                mid = end;//最小值
+                break;
+            }
+            mid = (start+end)/2;//找中间值
+            //若mid、start、end下标对应的元素全相同，则顺序查找
+            if(a[start] == a[end] && a[mid] == a[start])
+            {
+                return minInorder(a,start,end);
+            }
+            
+            if(a[mid] >= a[start])//说明第一个是递增排序
+            {
+                start = mid;//往后找
+            }
+            else if(a[mid] <= a[end]) //说明后面也是一高递增排序
+            {
+                end = mid; //往中间找
+            }
+        }
+        return a[mid];
+    }
+};
+
+int main()
+{
+    Solution ss;
+    //int a[] = {3,4,5,1,2};
+    int a[] = {1,1,1,0,1};
+    int length = 5;
+    int minNum = ss.Min(a,length);
+    cout << "该数组最小的元素: " << minNum << endl;
+}

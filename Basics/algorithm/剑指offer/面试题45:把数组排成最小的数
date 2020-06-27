@@ -1,0 +1,50 @@
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+string PrintMinNumber(vector<int> number,int length)
+{
+    if(number.empty() || length < 0)
+    {
+        return 0;
+    }
+    vector<string> num_string;
+    for(int i = 0;i<length;i++)
+    {
+        num_string.push_back(to_string(number[i]));
+    }
+
+    for(int i = 0;i<length-1;i++)
+    {
+        for(int j = i+1;j<length;j++)
+        {
+            if((num_string[i]+num_string[j]) > num_string[j]+num_string[i])
+            {
+                string string_temp ;
+                string_temp      = num_string[i];
+                num_string[i]    = num_string[j];
+                num_string[j]    = string_temp;
+            }
+        }
+    }
+    string string_num;
+    for(int i = 0;i<length;i++)
+    {
+        string_num += num_string[i];
+    }
+    return string_num;
+}
+
+int main()
+{
+    int a[] = {3,32,321};
+    vector<int> number;
+    int length = 3;
+    for(int i = 0;i<length;i++)
+    {
+        number.push_back(a[i]);
+    }
+    string string_1 = PrintMinNumber(number,length);
+    cout<<string_1<<endl;
+}

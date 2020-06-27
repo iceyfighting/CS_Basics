@@ -1,0 +1,53 @@
+#include<iostream>
+using namespace std;
+
+class CSingleton{
+    private:
+        //1,构造函数是私有的，不能通过构造函数创建该类实例
+        CSingleton(){}
+        //2,静态成员变量且私有，指向一个CSinglrton实例
+        //同一时间只存在一个这个变量，
+        static CSingleton *m_pInstance;
+    public:
+        int number;
+        //通过函数创建实例且唯一
+        static CSingleton *GetInstance()
+        {
+            if(m_pInstance == NULL)
+            {
+                m_pInstance = new CSingleton;
+            }
+            return m_pInstance;
+        }
+        void set_number()
+        {
+            this->number ++;
+        }
+        void print_number()
+        {
+            cout << this->number << endl;    
+        }
+};
+
+//4,初始化类的静态成员变量
+CSingleton *CSingleton::m_pInstance = NULL;
+
+int main()
+{
+    // 这句话编译不通过，因为构造函数私有，在外部不能被访问
+    //CSingleton *cl = new CSingleton();
+
+    CSingleton *c1 = CSingleton::GetInstance();
+    c1->number = 5;
+    c1->set_number();
+    c1->print_number();
+
+
+    CSingleton *c2 = CSingleton::GetInstance();
+    c2->set_number();
+    c2->print_number();
+}
+
+
+
+

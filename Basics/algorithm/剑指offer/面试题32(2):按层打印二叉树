@@ -1,0 +1,99 @@
+#include<iostream>
+#include<stdlib.h>
+#include<deque>
+    using namespace std;
+
+    struct BinaryTreeNode{
+    int             val;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+    };
+
+
+    int Array_BinaryTree[] = {8,6,5,0,0,7,0,0,10,9,0,0,11,0,0};
+    int index_1 = 0;
+    class Solution{
+    public:
+        BinaryTreeNode*  CreateBinaryTree(BinaryTreeNode *tree)
+        {
+            int num = Array_BinaryTree[index_1++];
+            //cout << index_1 <<endl;//无递归结束的标志
+            if(num == 0)
+            {
+                tree = NULL;
+            }
+            else
+            {
+                tree = new BinaryTreeNode;
+                //cout << "11111"<<endl;
+                tree->val = num;
+                tree->left = CreateBinaryTree(tree->left);
+                tree->right= CreateBinaryTree(tree->right);
+            }
+            return tree;
+        }
+
+        void print_Tree_preOrder(BinaryTreeNode *tree)
+        {
+            if(tree)
+            {
+                cout << tree->val << " ";
+                print_Tree_preOrder(tree->left);
+                print_Tree_preOrder(tree->right);
+            }
+        }
+        //按行打印二叉树
+        void Print(BinaryTreeNode *root)
+        {
+            deque<BinaryTreeNode *> dequeTreeNode;
+            int nextLeavel = 0;//记录下层结点个数
+            int toBeprint = 1;//将要打印的结点个数当层
+            if(!root) //判断链表不为空
+            {
+                return ;
+            } 
+            dequeTreeNode.push_back(root);//根结点放入队列
+            while(dequeTreeNode.size())
+            {   //返回第一个数据
+                 BinaryTreeNode *pNode = dequeTreeNode.front();
+                 //删除容器第一个数据
+                 dequeTreeNode.pop_front();
+                 //打印第一个数据
+                 cout << pNode->val << " ";
+                 if(pNode->left)
+                 {
+                     dequeTreeNode.push_back(pNode->left);
+                     ++nextLeavel;
+                 }
+                 if(pNode->right)
+                 {
+                     dequeTreeNode.push_back(pNode->right);
+                     ++nextLeavel;
+                 }
+
+                 toBeprint--;//打印一个结点
+                 if(toBeprint == 0)
+                {
+                    toBeprint = nextLeavel;
+                    nextLeavel = 0;
+                    cout << endl;
+                }
+            }
+
+        }
+};
+
+int main()
+{
+    BinaryTreeNode *tree = NULL;
+        
+    Solution ss;
+    //创建二叉树
+    tree = ss.CreateBinaryTree(tree);
+    //先序遍历打印二叉树
+    //ss.print_Tree_preOrder(tree);
+    //cout << endl;
+    //按层打印二叉树
+    ss.Print(tree);
+    cout << endl;
+}

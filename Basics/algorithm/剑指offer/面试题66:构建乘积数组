@@ -1,0 +1,47 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+class Solution{
+  public:
+    vector<int> multiply(const vector<int> &array1)
+    {
+        int length = array1.size();
+        vector<int> B(length,1);
+        for(int i = 1;i<length;++i)
+        {
+            B[i] = B[i-1]*array1[i-1];
+            //cout << "B[i] :" << B[i] << endl;
+        }
+        
+        int temp = 1;
+        for(int i = length-2;i>=0;--i)
+        {
+            temp *= array1[i+1];
+            B[i] *= temp;
+            cout << "B[i] :" << B[i] << endl;
+        }
+        return B;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    int a[] = {1,2,3,4,5};
+    vector<int> array1;
+    int length1 = 5;
+    for(int i = 0;i< 5 ;i++)
+    {
+        array1.push_back(a[i]);
+    }
+
+    vector<int> array2;
+    array2 = ss.multiply(array1);
+
+    for(vector<int>::iterator it = array2.begin();it!=array2.end();++it)
+    {
+        int iItem = *it;
+        cout << iItem << endl;
+    }
+}

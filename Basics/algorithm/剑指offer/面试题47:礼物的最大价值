@@ -1,0 +1,87 @@
+#include<iostream>
+using namespace std;
+
+class Solution{
+  public:
+  //---------------------------递归
+    int max_giftCore(int *present,int rows,int cols,int row,int col)
+    {
+        int down = 0,right = 0;
+        int result = 0;
+        //向下
+        if(row < rows-1)
+        {
+            //++row;
+            down = max_giftCore(present,rows,cols,row+1,col);
+            cout << "第" <<row << "行礼物值" << down <<endl;
+        }
+        //向右
+        if(col < cols-1)
+        {
+            //++col;
+            right = max_giftCore(present,rows,cols,row,col+1);
+            cout << "第" << col << "列礼物值:" << right <<endl;
+        }
+        result = down>right?down:right;
+        return result+present[row*cols+col];
+    }
+    int max_gift(int *present,int rows,int cols)
+    {
+        if(present == NULL || rows < 1 || cols < 1)
+        {
+            return 0;
+        }
+        return max_giftCore(present,rows,cols,0,0);
+    }
+    //--------------------------------------动态规划
+    int max_gift(int *present,int rows,int cols)
+    {
+        if(present == NULL || rows < 1 || cols < 1)
+        {
+            return 0;
+        }
+
+        int* maxValues = new int[cols];//默认初始值为0
+
+        for(int i = 0;i< rows;++i)
+        {
+            cout << "每" << i << "行:" ;
+            for(int j = 0;j<cols;++j)
+            {
+                int up = 0;
+                int left = 0;
+
+                if( i > 0)
+                {
+                    up = maxValues[j];
+                }
+
+                if(j > 0)
+                {
+                    left = maxValues[j-1];
+                }
+                maxValues[j] = max(up,left) + present[i*cols + j];
+                cout << " 每" << j <<"列礼物最大值:" << maxValues[j] ;
+            }
+            cout << endl;
+        }
+
+        int max_value = maxValues[cols-1];
+        delete[] maxValues;
+
+        return max_value;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    int rows = 4;
+    int cols = 4;
+    int present[16] = {
+                       1,10,3,8,
+                       12,2,9,6,
+                       5,7,4,11,
+                       3,7,16,5};
+    cout << "礼物的最大价值:" << ss.max_gift(present,rows,cols) << endl;
+}

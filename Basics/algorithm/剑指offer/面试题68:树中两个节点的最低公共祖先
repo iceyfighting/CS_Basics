@@ -1,0 +1,135 @@
+
+#include<iostream>
+#include<stdlib.h>
+#include<vector>
+using namespace std;
+
+struct BinaryTreeNode{
+    char             val;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+};
+
+struct BinaryTreeNode *arrayTreeNode[20];
+int index_2 = 0;
+
+char Array_BinaryTree[] = "ABDF##G##EH##I##C##";
+int index_1 = 0;
+class Solution{
+public:
+    BinaryTreeNode*  CreateBinaryTree(BinaryTreeNode *tree)
+    {
+        char num = Array_BinaryTree[index_1++];
+        //cout << index_1 <<endl;//无递归结束的标志
+        if(num == '#')
+        {
+            tree = NULL;
+        }
+        else
+        {
+            tree = new BinaryTreeNode;
+            tree->val = num;
+            tree->left = CreateBinaryTree(tree->left);
+            tree->right= CreateBinaryTree(tree->right);
+        }
+        return tree;
+    }
+
+    void print_Tree_preOrder(BinaryTreeNode *tree)
+    {
+        if(tree)
+        {
+            cout << tree->val << " ";
+            arrayTreeNode[index_2++] = tree;
+            print_Tree_preOrder(tree->left);
+            print_Tree_preOrder(tree->right);
+        }
+    }
+
+    bool findPath(BinaryTreeNode *root,BinaryTreeNode* t,vector<BinaryTreeNode *>& v)
+    {
+        bool flag = false;
+        //在vector中加入节点
+        v.push_back(root);
+        //如果找到节点，则flag = true，不再往下递归，开始返回
+        if(root == t)
+        {
+            flag = true;
+        }
+        //左孩子不为NULL，且目前还没找到t，才能通过左子树递归
+        if(root->left != NULL && flag == false)
+        {
+            flag = findPath(root->left,t,v);
+        }
+        //右孩子不为NULL，且已经查完左子树，在左子树中没找到t
+        //才能沿着右子树递归查找，否则在左子树中找到t，则准备返回
+        if(root->right != NULL && flag == false)
+        {
+            flag = findPath(root->right,t,v);
+        }
+        //此时数组中保存的是根结点到t的路径
+        if(flag == false)
+        {
+            v.pop_back();
+        }
+        //cout << "每一轮flag:" << flag << endl;
+        return flag;
+    }
+
+    BinaryTreeNode* lowestCommonParent(BinaryTreeNode* root,BinaryTreeNode* p,BinaryTreeNode* q)
+    {
+        if(root == NULL || p == NULL || q == NULL)
+        {
+            return NULL;
+        }
+        vector<BinaryTreeNode* > v1;
+        vector<BinaryTreeNode* > v2;
+        //第一步:找到根结点到两个节点的路径
+        bool t1 = findPath(root,p,v1);
+        cout << t1 << endl;
+        bool t2 = findPath(root,q,v2);
+        //t1 t2 都为true
+        if(t1==true && t2 == true)
+        {
+            int i = 0,j = 0;
+            BinaryTreeNode* tt;
+            //逐步向后比较，找出最后一个相同的节点，即为输入结点的最低公共祖先
+            while(i<v1.size() && j < v2.size() && v1[i] == v2[j])
+            {
+                tt = v1[i];
+                cout << tt->val << endl;
+                i++;
+                j++;
+            }
+            return tt;
+        }
+        else //树中不存在p q
+        {
+            return NULL;
+        }
+    }
+
+};
+
+int main()
+{
+    BinaryTreeNode *tree = NULL;
+        
+    Solution ss;
+    //创建二叉树
+    tree = ss.CreateBinaryTree(tree);
+    //先序遍历打印二叉树
+    ss.print_Tree_preOrder(tree);
+    cout << endl;
+    //按层打印二叉树
+    //cout << arrayTreeNode[3]->val << endl;
+    BinaryTreeNode *comParent = ss.lowestCommonParent(tree,arrayTreeNode[3],arrayTreeNode[6]);
+    if(comParent != NULL)
+    {
+        cout << "两个节点F和H的最低共同祖先:" << comParent->val << endl;
+    }
+    else
+    {
+        cout << "节点F和H无最低共同祖先" << endl;
+    }
+}

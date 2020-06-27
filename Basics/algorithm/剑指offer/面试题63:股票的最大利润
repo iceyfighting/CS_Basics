@@ -1,0 +1,38 @@
+#include<iostream>
+using namespace std;
+
+class Solution{
+  public:
+    int maxDiff(int *a,int length)
+    {
+        if(length < 2)
+        {
+            return 0;
+        }
+        int min = a[0];
+        int max = 0;
+        for(int i = 1;i<length;i++)
+        {
+            if(min>a[i])
+            {
+                min = a[i];
+            }
+            
+            if(max < (a[i]-min))
+            {
+                max = a[i]-min;
+            }
+            //max = a[i]-min > max ?a[i]-min : min;
+        }
+        return max;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    int a[] = {9,11,8,5,7,12,16,14};
+    int length = 8;
+    //int max_money = maxDiff(a,length);
+    cout << ss.maxDiff(a,length) << endl;
+}

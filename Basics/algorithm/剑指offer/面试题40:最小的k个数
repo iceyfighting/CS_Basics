@@ -1,0 +1,189 @@
+#include<iostream>
+#include<set>
+#include<vector>
+using namespace std;
+
+bool g_bInputInvalid = false;
+
+typedef multiset<int,greater<int> > set_kthnum;
+typedef multiset<int,greater<int> >::iterator numIterator;
+#define MAXSIZE 1000
+typedef struct 
+{
+    int a[MAXSIZE+1];
+    int length;
+}SqList;
+
+class Solution
+{
+    public:
+        int Partition(SqList *S,int left,int right,int length)
+        {
+            
+            cout << "left:" << left << endl;
+            int povitkey = S->a[left];
+            cout << "povitkey:" << povitkey << endl;
+            S->a[0] = povitkey;
+            while(left<right)
+            {
+                while(left < right && S->a[left]<=povitkey)
+                {
+                    left++;
+                }
+                S->a[right] = S->a[left];
+                while(left < right && S->a[right]>=povitkey)
+                {
+                    right--;
+                }
+                S->a[left] = S->a[right];
+            }
+            S->a[left] = povitkey;
+            return left;
+        }
+
+        //bool g_bInputInvalid = false;
+
+        bool CheckInvalidArray(SqList *S,int length)
+        {
+            g_bInputInvalid = false;
+            if(S == NULL || length < 0)
+            {
+                g_bInputInvalid = true;
+            }
+            return g_bInputInvalid;
+        }
+        
+        bool CheckMoreThanHalf(SqList *S,int length,int result,int kth_num)
+        {
+            int times = 0;
+            for(int i = 1;i<= length;i++)
+            {
+                if(S->a[i] <= result)
+                {
+                    times++;
+                }
+            }
+            //cout << times << endl; 
+            bool isMoreThanHalf = true;
+            if(times == kth_num)
+            {
+                g_bInputInvalid = true;
+                isMoreThanHalf  = false;
+            }
+            return isMoreThanHalf;
+        }
+
+        int MoreThanHalfNum(SqList *S,int length,int kth_num)
+        {
+            if(CheckInvalidArray(S,length))
+            {
+                return 0;
+            }
+            //int middle = length/2;
+            int start = 1;
+            int end = length;
+            int index = Partition(S,start,end,length);
+            cout << "index:" << index << endl;
+            while(index != kth_num)
+            {
+                if(index>kth_num)
+                {
+                    end = index-1;
+                    index = Partition(S,start,end,length);
+                }
+                else
+                {
+                    start = index+1;
+                    index = Partition(S,start,end,length);
+                }
+
+            }
+            int result = S->a[kth_num];
+            cout << "第k小的数字:" <<result << endl;
+            if(!CheckMoreThanHalf(S,length,result,kth_num))
+            {
+                result = 0;
+            }
+            return result;
+        }
+
+        vector<int> MoreThanHalfNum_2(const vector<int>& data,int kth_num)
+        {
+            vector<int> output;
+            
+            set<int ,greater<int> > tt;
+            set<int ,greater<int> >::iterator it;
+            if(kth_num<1 || data.size()<kth_num)
+            {
+                return output;
+            }
+            
+            for(int i = 0; i < data.size();++i)
+            {
+                if(i < kth_num)
+                {
+                    tt.insert(data[i]);
+                }
+                else
+                {
+                   it = tt.begin();
+                   
+                   if(*it > data[i])
+                   {
+                        tt.erase(it);
+                        tt.insert(data[i]);
+                   }
+                   
+                }
+            }
+
+            for(it = tt.begin();it != tt.end();it++)
+            {
+                output.push_back(*it);
+            }
+            return output;
+        }
+
+
+};
+
+int main()
+{
+    Solution ss;
+    int a[] = {4,5,1,6,2,7,3,8};
+    SqList L;
+    //-------------------------------------快排方式----------------------------
+    int length = 8;
+    for(int i = 0;i<length;i++)
+    {
+        L.a[i+1] = a[i];
+        
+    }
+    int more_half = ss.MoreThanHalfNum(&L,length); 
+    int kth_num = 4;
+    
+    for(int i = 0;i<length;i++)
+    {
+        if(a[i]<=more_half)
+        {
+            cout << a[i] << " ";
+        }
+    }
+    cout <<endl;
+    //-------------------------------------------------第二种容器方式----------------
+    vector<int> input;
+    
+    int length = 8;
+    for(int i = 0;i<length;i++)
+    {
+        
+        input.push_back(a[i]);
+    }
+    int kth_num = 4;
+    vector<int> output = ss.MoreThanHalfNum_2(input,kth_num); 
+    for(int i = 0;i<kth_num;++i)
+    {
+        cout << output[i] << " ";
+    }
+    cout <<endl;
+}

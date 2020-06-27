@@ -1,0 +1,127 @@
+//------------------------字符方式------------------------
+#include<iostream>
+using namespace std;
+
+class Solution{
+  public:
+    void Reverse(char *pBegin,char *pEnd)
+    {
+        if(pBegin == NULL || pEnd == NULL)
+        {
+            return ;
+        }
+        while(pBegin < pEnd)
+        {
+            char temp = *pBegin;
+            *pBegin   = *pEnd;
+            *pEnd     = temp;
+
+            pBegin++;
+            pEnd--;
+        }
+    }
+    
+    char*  ReverseSentence(char *pData)
+    {
+        if(pData == NULL)
+        {
+            return NULL;
+        }
+        char *pBegin = pData;
+        char *pEnd   = pData;
+        while(*pEnd != '\0')
+        {
+            pEnd++;
+        }
+        pEnd--; //去掉\0
+        //翻转整个句子
+        Reverse(pBegin,pEnd);
+        //翻转句子中的每个单词
+        pBegin = pEnd = pData;
+        while(*pBegin !='\0')
+        {
+            if(*pBegin == ' ')//截出一个单词
+            {
+                pBegin++;
+                pEnd++;
+            }
+            else if(*pEnd == ' ' || *pEnd == '\0')
+            {
+                Reverse(pBegin,--pEnd);
+                pBegin = ++pEnd;
+            }
+            else
+            {
+                pEnd++;
+            }
+        }
+        return pData;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    char str[] = "I am a student.";
+    char* s = ss.ReverseSentence(str);
+    int i = 0;
+    while(s[i]!='\0')
+    {
+        cout << s[i++];
+        
+    }
+    cout << endl;
+}
+//------------------------字符串方式------------------------
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Solution{
+  public:
+    void Reverse(string &str,int left,int right)
+    {
+        while(left < right)
+        {
+            char temp = str[left];
+            str[left]   = str[right];
+            str[right]  = temp;
+
+            left++;
+            right--;
+        }
+    }
+    
+    string  ReverseSentence(string str)
+    {
+        int length = str.size();
+        int left = 0;
+        int right= length-1;
+        Reverse(str,left,right);
+
+        left = 0;
+        for(int i = 0; i <= length;i++)
+        {
+            if(str[i] == ' ' || str[i] == '\0')
+            {
+                Reverse(str,left,i-1);
+                left = i+1;
+            }
+        }
+        return str;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    string str = "I am a student.";
+    string s = ss.ReverseSentence(str);
+    //int i = 0;
+    for(int i = 0; i < s.size();i++)
+    {
+        cout << s[i];
+        
+    }
+    cout << endl;
+}

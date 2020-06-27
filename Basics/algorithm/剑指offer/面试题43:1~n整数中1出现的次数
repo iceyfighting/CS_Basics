@@ -1,0 +1,57 @@
+#include<iostream>
+using namespace std;
+
+int NumberOf1_1(unsigned int num)
+{
+    int sum_num = 0;
+    while(num%10 == 1)
+    {
+        sum_num++;
+        num = num/10;
+    }
+    return sum_num;
+}
+
+int NumberOf1Between1AndN_1(unsigned int n)
+{
+    int number = 0;
+    for(unsigned int i = 1;i<=n;++i)
+    {
+        number+=NumberOf1_1(i);
+    }
+    return number;
+}
+
+
+int NumberOf1Between1AndN_2( unsigned int n)
+{
+    int ones = 0;
+    for(int i = 1;i<=n;i*=10)
+    {
+        int gaowei = n/i;
+        int diwei  = n%i;
+        cout << "gaowei: " << gaowei << endl;
+        cout << "diwei: "  << diwei  << endl;
+        if(gaowei %10 == 0)
+        {
+            ones += (gaowei / 10) *i;
+        }
+        else if(gaowei % 10 == 1)
+        {
+            ones += (gaowei /10) * i + (diwei + 1);
+        }
+        else
+        {
+            ones += ((gaowei /10) +1) *i;
+        }
+        cout << "ones:" << ones <<endl;
+    }
+    return ones;
+}
+int main()
+{
+    unsigned int num = 31456;
+    //cin >> num ;
+    int numOf1 = NumberOf1Between1AndN_2(num);
+    cout << "1~n整数中1出现的次数" << numOf1 << endl;
+}

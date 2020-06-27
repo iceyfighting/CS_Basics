@@ -1,0 +1,55 @@
+#include<iostream>
+using namespace std;
+
+class Solution{
+  public:
+    int getFirstk(int *sorted_array,int left,int right)
+    {
+        
+        if(left <= right)
+        {
+            int index = (left + right) >> 1;
+            int mid   = sorted_array[index];
+
+            //if(index != mid)
+            //{
+            //    if(index == 0 || sorted_array[index-1] == index-1)
+            //    {
+            //        return mid;
+            //    }
+            //    right = index - 1;
+            //}
+            //else
+            //{
+            //    left = index + 1;
+            //}
+            if(index == 0 || (index != mid && sorted_array[index-1] == index-1))
+            {
+                return mid;
+            }
+            else if(index == 0 || (index !=mid && sorted_array[index-1] != index-1))
+            {
+                right  = index - 1;
+            }
+            else
+            {
+                left = index +1;
+            }
+            return getFirstk(sorted_array,left,right);
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    
+    
+};
+
+int main()
+{
+    Solution ss;
+    int sorted_array[] = {0,1,2,4,5,6,7};
+    int length = 7;
+    cout << ss.getFirstk(sorted_array,0,length-1) << endl;
+}

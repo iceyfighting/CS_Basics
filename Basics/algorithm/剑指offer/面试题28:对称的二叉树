@@ -1,0 +1,97 @@
+/*
+ *1) 前序遍历是先遍历父节点，再遍历左子节点最后遍历右子节点
+2) 针对前序遍历定义一种对称的遍历算法，即先遍历父节点，再遍历它的右子节点，最后遍历它的左子节点。
+3) 这样，若对称遍历算法得到的序列和前序遍历算法得到的序列一样，则说明该二叉树是对称的。
+ * */
+#include<iostream>
+#include<stdlib.h>
+#include<vector>
+    using namespace std;
+
+    struct BinaryTreeNode{
+    int             val;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+    };
+
+
+    int Array_BinaryTree[] = {8,6,5,0,0,7,0,0,6,7,0,0,5,0,0};
+    int index_1 = 0;
+    class Solution{
+    public:
+        BinaryTreeNode*  CreateBinaryTree(BinaryTreeNode *tree)
+        {
+            int num = Array_BinaryTree[index_1++];
+            //cout << index_1 <<endl;//无递归结束的标志
+            if(num == 0)
+            {
+                tree = NULL;
+            }
+            else
+            {
+                tree = new BinaryTreeNode;
+                //cout << "11111"<<endl;
+                tree->val = num;
+                tree->left = CreateBinaryTree(tree->left);
+                tree->right= CreateBinaryTree(tree->right);
+            }
+            return tree;
+        }
+
+        void print_Tree_preOrder(BinaryTreeNode *tree)
+        {
+            if(tree)
+            {
+                cout << tree->val << " ";
+                print_Tree_preOrder(tree->left);
+                print_Tree_preOrder(tree->right);
+            }
+        }
+        bool  isSymmetrical(BinaryTreeNode *root)
+        {
+            return isSymmetrical(root,root);
+        }
+
+        bool isSymmetrical(BinaryTreeNode *root1,BinaryTreeNode *root2)
+        {
+            if(root1 == NULL && root2 == NULL)
+            {
+                return true;
+            }
+            if(root1->val != root2->val)
+            {
+                return false;
+            }
+            if(!root1 && !root2)
+            {
+                return false;
+            }
+
+            return isSymmetrical(root1->left,root2->right)&&isSymmetrical(root2->right,root1->left);
+        }
+
+};
+
+int main()
+{
+    BinaryTreeNode *tree = NULL;
+        
+    Solution ss;
+    //创建二叉树
+    tree = ss.CreateBinaryTree(tree);
+    //先序遍历打印二叉树
+    ss.print_Tree_preOrder(tree);
+    cout << endl;
+    //按层打印二叉树
+    bool flag = ss.isSymmetrical(tree);
+    if(flag == 0)
+    {
+        cout << "该二叉树不对称" << endl;
+    }
+    else
+    {
+        cout << "该二叉树对称" << endl;
+    }
+    ss.print_Tree_preOrder(tree);
+    cout << endl;
+}

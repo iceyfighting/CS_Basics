@@ -1,0 +1,88 @@
+/*
+定义三个指针left、center、right。从链表头结点开始遍历，遍历到尾节点时输出即可。看似简单其实是需要仔细理解的。
+*/
+
+#include<iostream>
+using namespace std;
+
+struct ListNode{
+  int val;
+  ListNode *next;
+};
+
+class Solution{
+  public:
+    ListNode* createNode(ListNode *head,int a[],int len)
+    {
+        ListNode* tail = NULL;
+        ListNode* loop  = NULL;
+        for(int i = 0;i<len;i++)
+        {
+            ListNode *p = new ListNode;
+            p->val = a[i];
+            p->next = NULL;
+            
+            if(head == NULL)
+            {
+                head = p;
+            }
+            else
+            {
+                tail->next = p;
+            }
+            tail = p;
+        }
+        return head;
+    }
+
+    void Output(ListNode *head)
+    {
+        if(head == NULL )
+        {
+            cout << "链表为空" << endl;
+        }
+        while(head != NULL)
+        {
+            cout << head->val << " ";
+            head = head->next;
+        }
+    }
+    
+    ListNode* reverseList(ListNode *head)
+    {
+        ListNode *left = NULL;
+        ListNode *right= NULL;
+        ListNode *center = NULL;
+        if(head == NULL)
+        {
+            return NULL;
+        }
+
+        center = head;
+        while(center)
+        {
+            right = center->next;
+            center->next = left;
+            left  = center;
+            center= right;
+
+        }
+        return left;
+    }
+};
+
+int main()
+{
+    Solution ss;
+    ListNode *head;
+    head = NULL;
+    int a[] = {1,3,5,6,7};
+    head = ss.createNode(head,a,5);
+    ss.Output(head);
+    cout << endl;
+    head = ss.reverseList(head);
+    ss.Output(head);
+    cout << endl;
+}
+
+

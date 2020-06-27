@@ -1,0 +1,64 @@
+#include<iostream>
+using namespace std;
+
+class Solution
+{
+    public:
+        bool count_dup(int *a,int left,int mid,int length)
+        {
+            //判断元素个数
+            int count = 0;
+            for(int i =0;i<length;i++)
+            {
+                if(a[i]>=left && a[i]<=mid)
+                {
+                    count++;
+                }
+            }
+            if(count > (mid-left)+1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        int duplicate(int *a,int left,int right,int length)
+        {
+            int mid = (left+right)/2;
+            bool flag_dup = count_dup(a,left,mid,length);
+            if((right-left) == 1)
+            {
+                //有重复元素
+                if(flag_dup)
+                {
+                    return left;
+                }
+                else
+                {
+                    return right;//针对数组{2, 2, 5, 4, 3, 2, 6, 7};这种有重复值为right，时
+                }
+            }
+
+            if(flag_dup)
+            {
+                return duplicate(a,left,mid,length);
+            }
+            else
+            {
+                return duplicate(a,mid+1,right,length);
+            }
+        }
+};
+
+int main()
+{
+    Solution ss;
+    int a[] = {2,3,5,4,3,2,6,7,8};
+    int length = 9;
+    int left = 1;
+    int right = 8;
+    int dup = 0;
+    cout << ss.duplicate(a,left,right,length) << endl;
+}
